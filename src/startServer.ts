@@ -15,7 +15,7 @@ import { createTypeormConn } from './utils/createTypeormConn';
 
 const RedisStore = connectRedis(session as any);
 
-export const startServer = async (): Promise<express> => {
+export const startServer = async (): Promise<express.Express> => {
     if (process.env.NODE_ENV === 'test') {
         await redis.flushall();
     }
@@ -66,6 +66,6 @@ export const startServer = async (): Promise<express> => {
 
     app.listen(port, () => {
         logger.info(`🚀 Server is running on http://localhost:${port}/ 🚀`);
-        return app;
     });
+    return app;
 };
