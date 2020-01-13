@@ -1,0 +1,41 @@
+import * as yup from 'yup';
+
+export const emailNotLongEnough = 'Email must be at least 3 characters';
+export const firstNameNotLongEnough = 'Name must be at least 3 characters';
+export const lastNameNotLongEnough = 'Last name must be at least 3 characters';
+export const passwordNotLongEnough = 'Password must be at least 6 characters';
+export const invalidEmail = 'Email must be a valid email';
+
+const email = yup
+    .string()
+    .min(3, emailNotLongEnough)
+    .max(255)
+    .email(invalidEmail)
+    .required();
+
+export const validPasswordSchema = yup
+    .string()
+    .min(6, passwordNotLongEnough)
+    .max(255)
+    .required();
+
+export const validUserSchema = yup.object().shape({
+    email,
+    password: validPasswordSchema,
+    first_name: yup
+        .string()
+        .min(6, firstNameNotLongEnough)
+        .max(100)
+        .required(),
+    last_name: yup
+        .string()
+        .min(3, lastNameNotLongEnough)
+        .max(100)
+        .required(),
+    date_of_birth: yup.date(),
+});
+
+export const validUserLoginSchema = yup.object().shape({
+    email,
+    password: validPasswordSchema,
+});
