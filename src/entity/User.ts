@@ -28,8 +28,8 @@ export class User extends BaseEntity {
     @Column()
     last_name: string;
 
-    @Column()
-    age: number;
+    @CreateDateColumn({ nullable: true })
+    date_of_birth: Date;
 
     @Column({ type: 'text' })
     password: string;
@@ -37,36 +37,40 @@ export class User extends BaseEntity {
     @CreateDateColumn()
     created: Date;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', nullable: true })
     about: string;
 
     @Column({ type: 'boolean', default: false })
     online: boolean;
 
-    @Column({ type: 'timestamp' })
+    @CreateDateColumn()
     last_active: Date;
 
     @OneToMany(
         () => Channel,
         channel => channel.owner,
+        { nullable: true },
     )
     own_channels: Channel[];
 
     @OneToMany(
         () => Message,
         message => message.sender,
+        { nullable: true },
     )
     messages: Message[];
 
     @OneToMany(
         () => Post,
         post => post.owner,
+        { nullable: true },
     )
     posts: Post[];
 
     @ManyToMany(
         () => Channel,
         channel => channel.participants,
+        { nullable: true },
     )
     @JoinTable({ name: 'user_channel' })
     channels: Channel[];
@@ -74,6 +78,7 @@ export class User extends BaseEntity {
     @ManyToMany(
         () => User,
         user => user.following,
+        { nullable: true },
     )
     @JoinTable({ name: 'subscription' })
     followers: User[];
