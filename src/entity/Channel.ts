@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
+import { Message } from './Message';
 
 @Entity()
 export class Channel extends BaseEntity {
@@ -11,7 +12,7 @@ export class Channel extends BaseEntity {
 
     @ManyToOne(
         () => User,
-        user => user.own_channels,
+        user => user.ownChannels,
     )
     owner: User;
 
@@ -20,4 +21,10 @@ export class Channel extends BaseEntity {
         user => user.channels,
     )
     participants: User[];
+
+    @OneToMany(
+        () => Message,
+        message => message.channel,
+    )
+    messages: Message[];
 }

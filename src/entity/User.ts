@@ -23,13 +23,13 @@ export class User extends BaseEntity {
     email: string;
 
     @Column()
-    first_name: string;
+    firstName: string;
 
     @Column()
-    last_name: string;
+    lastName: string;
 
     @CreateDateColumn({ nullable: true })
-    date_of_birth: Date;
+    dateOfBirth: Date;
 
     @Column({ type: 'text' })
     password: string;
@@ -44,14 +44,14 @@ export class User extends BaseEntity {
     online: boolean;
 
     @CreateDateColumn()
-    last_active: Date;
+    lastActive: Date;
 
     @OneToMany(
         () => Channel,
         channel => channel.owner,
         { nullable: true },
     )
-    own_channels: Channel[];
+    ownChannels: Channel[];
 
     @OneToMany(
         () => Message,
@@ -90,7 +90,7 @@ export class User extends BaseEntity {
     following: User[];
 
     @BeforeInsert()
-    async hashPasswordBeforeInsert() {
+    async hashPasswordBeforeInsert(): Promise<void> {
         this.password = await hash(this.password, 10);
     }
 }
