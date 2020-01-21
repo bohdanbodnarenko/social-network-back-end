@@ -37,6 +37,12 @@ export class User extends BaseEntity {
     @CreateDateColumn()
     created: Date;
 
+    @Column({ type: 'boolean', default: false })
+    confirmed: boolean;
+
+    @Column({ type: 'boolean', nullable: true })
+    forgotPasswordLocked: boolean;
+
     @Column({ type: 'text', nullable: true })
     about: string;
 

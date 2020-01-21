@@ -1,3 +1,3 @@
 import * as Redis from 'ioredis';
 
-export const redis = new Redis(6379);
+export const redis: Redis.Redis = new Redis(6379);

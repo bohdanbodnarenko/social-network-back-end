@@ -22,20 +22,20 @@ export const validPasswordSchema = yup
 export const validUserSchema = yup.object().shape({
     email,
     password: validPasswordSchema,
-    first_name: yup
+    firstName: yup
         .string()
         .min(6, firstNameNotLongEnough)
         .max(100)
         .required(),
-    last_name: yup
+    lastName: yup
         .string()
         .min(3, lastNameNotLongEnough)
         .max(100)
         .required(),
-    date_of_birth: yup.date(),
+    dateOfBirth: yup.date(),
 });
 
-export const validUserLoginSchema = yup.object().shape({
+export const validLoginSchema = yup.object().shape({
     email,
     password: validPasswordSchema,
 });
