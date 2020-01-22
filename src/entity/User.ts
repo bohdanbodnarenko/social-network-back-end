@@ -34,7 +34,7 @@ export class User extends BaseEntity {
     @Column({ type: 'text' })
     password: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ default: new Date() })
     created: Date;
 
     @Column({ type: 'boolean', default: false })
@@ -49,7 +49,7 @@ export class User extends BaseEntity {
     @Column({ type: 'boolean', default: false })
     online: boolean;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ default: new Date() })
     lastActive: Date;
 
     @OneToMany(

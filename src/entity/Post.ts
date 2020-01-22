@@ -14,7 +14,7 @@ export class Post extends BaseEntity {
     @Column({ type: 'text' })
     body: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ default: new Date() })
     created: Date;
 
     @OneToMany(

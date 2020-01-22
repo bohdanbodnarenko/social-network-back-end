@@ -10,7 +10,7 @@ export class Message extends BaseEntity {
     @Column({ type: 'text' })
     content: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ default: new Date() })
     created: Date;
 
     @ManyToOne(
