@@ -1,7 +1,8 @@
 import { Request } from 'express';
 
-import { User } from '../../../entity';
+import { Channel, User } from '../../../entity';
 
+// USER
 export interface AuthReq extends Request {
     user: User;
     token: string;
@@ -9,4 +10,11 @@ export interface AuthReq extends Request {
 
 export interface UserByIdReq extends Request {
     userById: User;
+}
+
+//CHANNEL
+
+export interface ChannelByIdReq extends Request {
+    channelById: Channel;
+    isOwner?: boolean;
 }

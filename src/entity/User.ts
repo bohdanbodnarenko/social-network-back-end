@@ -75,7 +75,7 @@ export class User extends BaseEntity {
 
     @ManyToMany(
         () => Channel,
-        channel => channel.participants,
+        channel => channel.members,
         { nullable: true },
     )
     @JoinTable({ name: 'user_channel' })

@@ -4,12 +4,13 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
 
 import { formatYupError } from '../../utils/formatYupError';
-import { validLoginSchema, validPasswordSchema, validUserSchema } from '../shared/validations/user';
+import { validLoginSchema, validPasswordSchema, validUserSchema } from '../shared/validations/';
 import { User } from '../../entity';
 import { redis } from '../../redis';
 import { emailTransporter } from '../../utils/emailTransporter';
 import { AuthReq } from '../shared/constants/interfaces';
 import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
+import { UpdateResult } from 'typeorm';
 
 export const me = (req: AuthReq, res: Response): Response => res.json(req.user);
 
@@ -200,10 +201,10 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
 
 export const confirmEmail = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const userId = await redis.get(id);
+    const userId = await redis.get(confirmEmailPrefix + id);
 
     if (userId) {
-        const promises: Promise<any>[] = [];
+        const promises: Promise<UpdateResult | number>[] = [];
 
         promises.push(User.update({ id: +userId }, { confirmed: true }));
         promises.push(redis.del(id));

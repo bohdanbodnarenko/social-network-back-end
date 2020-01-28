@@ -10,6 +10,12 @@ export class Channel extends BaseEntity {
     @Column({ type: 'varchar', length: 100 })
     name: string;
 
+    @Column({ type: 'varchar', length: 100, unique: true })
+    tag: string;
+
+    @Column({ type: 'boolean', default: true })
+    isPrivate: boolean;
+
     @ManyToOne(
         () => User,
         user => user.ownChannels,
@@ -20,7 +26,7 @@ export class Channel extends BaseEntity {
         () => User,
         user => user.channels,
     )
-    participants: User[];
+    members: User[];
 
     @OneToMany(
         () => Message,
