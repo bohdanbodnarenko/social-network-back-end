@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=social-network-dev
+        ports:
+            - '5432:5432'
+    db-test:
+        image: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=social-network-test
+        ports:
+            - '5433:5432'
+    redis:
+        image: redis
+        ports:
+            - '6379:6379'
+
+    backend:
+        build: ./
+        ports:
+            - '4000:4000'
+        depends_on:
+            - db
+            - redis
+        links:
+            - redis
+            - db

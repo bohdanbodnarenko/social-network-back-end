@@ -4,14 +4,15 @@ WORKDIR /app
 
 EXPOSE 4000
 
-COPY .env.prod .env
+COPY . .
+COPY .env.docker ./.env
 COPY package.json package.json
+COPY ormconfig.docker.json ./ormconfig.json
+
 RUN npm install typescript -g
 RUN npm install
+#RUN npm run build
 
-COPY . .
-RUN npm run build
-
-CMD ["node", "dist/"]
+CMD ["npm", "start"]
 
 USER node
