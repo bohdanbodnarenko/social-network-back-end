@@ -16,5 +16,4 @@ export interface UserByIdReq extends Request {
 
 export interface ChannelByIdReq extends Request {
     channelById: Channel;
-    isOwner?: boolean;
 }

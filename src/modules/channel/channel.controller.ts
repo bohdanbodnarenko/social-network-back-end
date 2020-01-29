@@ -1,8 +1,8 @@
-import { AuthReq, ChannelByIdReq } from '../shared/constants/interfaces';
+import { AuthReq, ChannelByIdReq, UserByIdReq } from '../shared/constants/interfaces';
 import { Response, NextFunction } from 'express';
 import { validChannelSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
-import { Channel} from '../../entity';
+import { Channel } from '../../entity';
 
 export const channelById = async (
     req: ChannelByIdReq,
@@ -10,7 +10,13 @@ export const channelById = async (
     next: NextFunction,
     id,
 ): Promise<void | Response> => {
-    const channel = await Channel.findOne({ where: { id }, relations: ['owner'] });
+    let channel;
+    try {
+        channel = await Channel.findOne({ where: { id }, relations: ['owner', 'members'] });
+    } catch (e) {
+        console.log(e);
+        return res.status(400).json({ error: 'Bad input' });
+    }
 
     if (!channel) {
         return res.status(404).json({ error: 'Channel does not exist' });
@@ -20,20 +26,21 @@ export const channelById = async (
     next();
 };
 
-export const getChannel = (req: ChannelByIdReq, res: Response) => {
+export const getChannel = (req: ChannelByIdReq, res: Response): Response => {
     return res.json(req.channelById);
 };
 
 export const getMyChannels = async (req: AuthReq, res: Response): Promise<Response> => {
     const channels = await Channel.createQueryBuilder('channel')
-        .innerJoinAndSelect('channel.members', 'user')
-        .where('user.id = :id', { id: req.user.id })
+        .innerJoinAndSelect('channel.members', 'members')
+        .where('members.id = :userId', { userId: req.user.id })
+        .select('channel')
         .getMany();
 
     //TODO do the same for own channels and merge it
-    console.log(channels);
+    const ownChannels = await Channel.find({ owner: { id: req.user.id } });
 
-    return res.json(channels);
+    return res.json(ownChannels.concat(channels));
 };
 
 export const createChannel = async (req: AuthReq, res: Response): Promise<Response> => {
@@ -66,4 +73,53 @@ export const createChannel = async (req: AuthReq, res: Response): Promise<Respon
     await channel.save();
 
     return res.json(channel);
+};
+
+export const addMemberToChannel = async (
+    req: AuthReq & UserByIdReq & ChannelByIdReq,
+    res: Response,
+): Promise<Response> => {
+    const { channelById, userById, user } = req;
+
+    if (user.id === userById.id) {
+        return res.status(400).json({ error: 'You are an owner of this channel' });
+    }
+
+    if (channelById.members.map(({ id }) => id).includes(userById.id)) {
+        return res.status(400).json({ error: `User with id ${userById.id} is already member of this channel` });
+    }
+
+    channelById.members = channelById.members.length ? channelById.members.concat(userById) : [userById];
+
+    await channelById.save();
+
+    return res.json({ message: 'Success' });
+};
+
+export const leaveFromChannel = async (req: AuthReq & ChannelByIdReq, res: Response): Promise<Response> => {
+    const { user, channelById } = req;
+    channelById.members = channelById.members.filter(({ id }) => id !== user.id);
+
+    await channelById.save();
+
+    return res.json({ message: 'Success' });
+};
+export const kickOutFromChannel = async (
+    req: AuthReq & UserByIdReq & ChannelByIdReq,
+    res: Response,
+): Promise<Response> => {
+    const { userById, channelById } = req;
+    channelById.members = channelById.members.filter(({ id }) => id !== userById.id);
+
+    await channelById.save();
+
+    return res.json({ message: 'Success' });
+};
+
+export const deleteChannel = async (req: AuthReq & ChannelByIdReq, res: Response): Promise<Response> => {
+    const { channelById } = req;
+
+    await Channel.delete({ id: channelById.id });
+
+    return res.json({ message: 'Success' });
 };

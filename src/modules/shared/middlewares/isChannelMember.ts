@@ -10,7 +10,6 @@ export const isChannelMember = async (
     const { user, channelById } = req;
 
     if (channelById.owner.id === user.id) {
-        req.isOwner = true;
         return next();
     }
 
