@@ -14,6 +14,51 @@ import { Channel } from './Channel';
 import { Message } from './Message';
 import { Post } from './Post';
 
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      User:
+ *        type: object
+ *        required:
+ *          - email
+ *          - password
+ *          - firstName
+ *          - lastName
+ *        properties:
+ *          id:
+ *            type: string
+ *          firstName:
+ *            type: string
+ *          lastName:
+ *            type: string
+ *          email:
+ *            type: string
+ *            format: email
+ *            description: Email for the user, needs to be unique.
+ *          password:
+ *              type: string
+ *              format: password
+ *          dateOfBirth:
+ *              type: string
+ *              format: date-time
+ *          created:
+ *              type: string
+ *              format: date-time
+ *          confirmed:
+ *              type: boolean
+ *              description: Did user confirm an email
+ *          forgotPasswordLocked:
+ *              type: boolean
+ *              description: Is account locked for changing password
+ *          about:
+ *              type: string
+ *          online:
+ *              type: boolean
+ *          lastActive:
+ *              type: string
+ *              format: date-time
+ */
 @Entity()
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn()

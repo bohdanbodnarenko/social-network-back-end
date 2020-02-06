@@ -3,6 +3,27 @@ import { User } from './User';
 import { Comment } from './Comment';
 import { Like } from './Like';
 
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      Post:
+ *        type: object
+ *        required:
+ *          - title
+ *          - body
+ *        properties:
+ *          id:
+ *            type: int
+ *          title:
+ *            type: string
+ *          body:
+ *            type: string
+ *            description: The content of the post.
+ *          created:
+ *              type: string
+ *              format: date-time
+ */
 @Entity()
 export class Post extends BaseEntity {
     @PrimaryGeneratedColumn()
