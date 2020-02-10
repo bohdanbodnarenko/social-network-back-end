@@ -1,4 +1,3 @@
-import { getConnection } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as requests from 'supertest';
 
@@ -8,7 +7,7 @@ export let request: requests.SuperTest<any>;
 let inited = false;
 beforeAll(async () => {
     dotenv.config();
-    
+
     if (!inited) {
         const app = await startServer();
         request = requests(app);
