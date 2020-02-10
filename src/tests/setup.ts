@@ -5,15 +5,19 @@ import * as requests from 'supertest';
 import { startServer } from '../startServer';
 
 export let request: requests.SuperTest<any>;
-
+let inited = false;
 beforeAll(async () => {
     dotenv.config();
-    const app = await startServer();
-    request = requests(app);
+    
+    if (!inited) {
+        const app = await startServer();
+        request = requests(app);
+        inited = true;
+    }
 });
 
-afterAll(async () => {
-    dotenv.config();
-    getConnection().close();
-    setTimeout(() => process.exit(), 1000);
-});
+// afterAll(async () => {
+//     dotenv.config();
+//     // getConnection().close();
+//     // setTimeout(() => process.exit(), 1000);
+// });

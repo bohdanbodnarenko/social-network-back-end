@@ -14,6 +14,7 @@ import * as routes from './modules/';
 import { createTypeormConn } from './utils/createTypeormConn';
 
 const RedisStore = connectRedis(session as any);
+export let App: express.Express;
 
 export const startServer = async (): Promise<express.Express> => {
     if (process.env.NODE_ENV === 'test') {
@@ -67,5 +68,8 @@ export const startServer = async (): Promise<express.Express> => {
     app.listen(port, () => {
         logger.info(`🚀 Server is running on http://localhost:${port}/ 🚀`);
     });
+
+    App = app;
+
     return app;
 };
