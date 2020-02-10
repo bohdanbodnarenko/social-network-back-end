@@ -66,6 +66,7 @@ describe('Auth routes', () => {
     });
     it('should confirm an email', async done => {
         const [userKey] = await redis.keys(confirmEmailPrefix + '*');
+        console.log(userKey);
         const { data, status } = await axios.get(
             `${process.env.API_BASE}/confirm/${userKey.replace(confirmEmailPrefix, '')}`,
         );
@@ -157,7 +158,7 @@ describe('Auth routes', () => {
     it('should change password correctly', async done => {
         const [userKey] = await redis.keys(forgotPasswordPrefix + '*');
         const { data, status } = await axios.post(
-            `${process.env.API_BASE}/change-password/${userKey.replace(forgotPasswordPrefix, '')}`,
+            `${process.env.API_BASE}/reset-password/${userKey.replace(forgotPasswordPrefix, '')}`,
             {
                 password: password2,
             },
