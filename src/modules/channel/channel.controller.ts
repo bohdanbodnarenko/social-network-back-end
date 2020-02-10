@@ -58,7 +58,7 @@ export const createChannel = async (req: AuthReq, res: Response): Promise<Respon
     });
 
     if (channelAlreadyExists) {
-        return res.status(400).json([
+        return res.status(401).json([
             {
                 path: 'tag',
                 message: 'This tag is taken already',

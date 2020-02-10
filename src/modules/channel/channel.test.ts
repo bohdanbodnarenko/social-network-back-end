@@ -87,7 +87,7 @@ describe('Channel routes', () => {
             .send({ tag, name })
             .set('Accept', 'application/json')
             .set('Authorization', 'Bearer ' + token)
-            .expect(400, [{ path: 'tag', message: 'This tag is taken already' }], done);
+            .expect(401, [{ path: 'tag', message: 'This tag is taken already' }], done);
     });
     it('should return a channel', done => {
         request
@@ -177,7 +177,7 @@ describe('Channel routes', () => {
         );
 
         await axios.post(
-            process.env.API_BASE + `/channel/${channelId1}/kickout/${userId}`,
+            process.env.API_BASE + `/channel/${channelId1}/kickOut/${userId}`,
             {},
             { headers: { authorization: 'Bearer ' + token1 } },
         );

@@ -14,7 +14,7 @@ import { Message } from './Message';
  *          id:
  *            type: string
  *          name:
- *            type: sting
+ *            type: string
  *          tag:
  *            type: string
  *            description: The unique tag of the channel.
