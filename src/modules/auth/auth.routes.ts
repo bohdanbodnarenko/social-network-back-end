@@ -13,6 +13,7 @@ import { changePassword, confirmEmail, login, me, registerUser, sendForgotPasswo
  *       bearerFormat: JWT
  *
  */
+
 export const authRouter = Router();
 
 /**
@@ -108,34 +109,30 @@ authRouter.get('/confirm/:id', confirmEmail);
  *               lastName:
  *                 type: string
  *               dateOfBirth:
- *                 type: sting
+ *                 type: string
  *                 format: date-time
  *               about:
- *                 type: sting
+ *                 type: string
  *             required:
- *               - username
+ *               - email
  *               - password
  *               - firstName
  *               - lastName
  *     responses:
  *       200:
- *         description: User found and logged in successfully
+ *         description: User created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *                 token:
+ *                 message:
  *                   type: string
- *                   example: 'L1tt7GEMkJdBXkR-tP0Y0eZ0ejFKAPiBBLLZHCB7fow.eyJpZCI6MiwiaWF0IjoxNTgxMzM3OTk5LCJleHAiOjE1ODE1MTA3OTl9'
+ *                   example: 'Registration success'
  *       400:
  *         description: Bad fields in request
  *       403:
- *         description: Email is not confirmed
- *       404:
- *         description: User with this email does not exist
+ *         description: Email is taken already
  */
 authRouter.post('/register', registerUser);
 
@@ -161,7 +158,7 @@ authRouter.post('/register', registerUser);
  *                 type: string
  *                 format: password
  *             required:
- *               - username
+ *               - email
  *               - password
  *     responses:
  *       200:
