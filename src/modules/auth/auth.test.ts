@@ -8,7 +8,7 @@ import { redis } from '../../redis';
 import { User } from '../../entity';
 import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
 
-const email = faker.internet.email(),
+const email = 'authTest@test.com',
     password = faker.internet.password(),
     firstName = faker.internet.userName(),
     lastName = faker.internet.userName(),
@@ -57,7 +57,9 @@ describe('Auth routes', () => {
     });
     it('should confirm an email', async done => {
         const [userKey] = await redis.keys(confirmEmailPrefix + '*');
-        const { data, status } = await axios.get(`${process.env.API_BASE}/confirm/${userKey}`);
+        const { data, status } = await axios.get(
+            `${process.env.API_BASE}/confirm/${userKey.replace(confirmEmailPrefix, '')}`,
+        );
         expect(status).toBe(200);
         expect(data).toEqual({ message: 'ok' });
         const user = await User.findOne(1);

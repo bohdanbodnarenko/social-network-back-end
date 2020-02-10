@@ -17,7 +17,7 @@ describe('User routes', () => {
     it('should insert a test users', async done => {
         for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
             const user = User.create({
-                email: faker.internet.email(),
+                email: `userTest${i}@test.com`,
                 password: passwords[i],
                 firstName: faker.internet.userName(),
                 lastName: faker.internet.userName(),
