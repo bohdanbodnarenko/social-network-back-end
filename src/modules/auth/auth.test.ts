@@ -1,12 +1,21 @@
 import * as faker from 'faker';
 import axios from 'axios';
+import * as requests from 'supertest';
 import { Response } from 'supertest';
 import * as bcrypt from 'bcryptjs';
 
-import { request } from '../../tests/setup';
 import { redis } from '../../redis';
 import { User } from '../../entity';
 import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
+import { createTypeormConn } from '../../utils/createTypeormConn';
+import { app } from '../../app';
+
+export let request: requests.SuperTest<any>;
+
+beforeAll(async () => {
+    await createTypeormConn();
+    request = requests(app);
+});
 
 const email = 'authTest@test.com',
     password = faker.internet.password(),

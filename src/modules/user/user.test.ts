@@ -1,34 +1,39 @@
 import * as faker from 'faker';
+import * as requests from 'supertest';
 import { Response } from 'supertest';
 import axios from 'axios';
 
-import { request } from '../../tests/setup';
 import { User } from '../../entity';
+import { createTypeormConn } from '../../utils/createTypeormConn';
+import { app } from '../../app';
+
+export let request: requests.SuperTest<any>;
 
 const users: User[] = [],
     passwords: string[] = [],
     GENERATE_USERS_COUNT = 3;
 
-for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
-    passwords.push(faker.internet.password());
-}
+beforeAll(async () => {
+    await createTypeormConn();
+    console.log(await User.find());
+    for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
+        passwords.push(faker.internet.password());
+    }
+    for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
+        const user = User.create({
+            email: `userTest${i}@test.com`,
+            password: passwords[i],
+            firstName: faker.internet.userName(),
+            lastName: faker.internet.userName(),
+            confirmed: true,
+        });
+        users.push(user);
+    }
+    await User.insert(users);
+    request = requests(app);
+});
 
 describe('User routes', () => {
-    it('should insert a test users', async done => {
-        for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
-            const user = User.create({
-                email: `userTest${i}@test.com`,
-                password: passwords[i],
-                firstName: faker.internet.userName(),
-                lastName: faker.internet.userName(),
-                confirmed: true,
-            });
-            users.push(user);
-        }
-        await User.insert(users);
-        expect((await User.find()).length).toBe(users.length);
-        done();
-    });
     it('should return a user', done => {
         request
             .get('/user/1')

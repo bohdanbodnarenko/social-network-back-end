@@ -1,8 +1,17 @@
 import axios from 'axios';
+import * as requests from 'supertest';
 import { Response } from 'supertest';
 
-import { request } from '../../tests/setup';
 import { Channel, User } from '../../entity';
+import { app } from '../../app';
+import { createTypeormConn } from '../../utils/createTypeormConn';
+
+export let request: requests.SuperTest<any>;
+
+beforeAll(async () => {
+    await createTypeormConn();
+    request = requests(app);
+});
 
 const email = 'testChannel@test.com',
     password = 'testChannel',
