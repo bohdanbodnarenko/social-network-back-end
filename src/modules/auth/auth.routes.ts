@@ -46,7 +46,7 @@ authRouter.get('/me', isAuth, me);
 
 /**
  * @swagger
- * /confirm/:id:
+ * /confirm/{id}:
  *   get:
  *     tags:
  *       - Auth
@@ -221,7 +221,7 @@ authRouter.post('/change-password', sendForgotPasswordEmail);
 
 /**
  * @swagger
- * /reset-password/:id:
+ * /reset-password/{id}:
  *   post:
  *     tags:
  *       - Auth

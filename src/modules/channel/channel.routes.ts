@@ -24,13 +24,6 @@ channelRouter.param('userId', userById);
  * @swagger
  * /channel:
  *   post:
- *     parameters:
- *       - in: path
- *         name: 'channelId'
- *         schema:
- *           type: sting
- *         required:
- *           true
  *     security:
  *       - bearerAuth: []
  *     tags:
@@ -48,7 +41,6 @@ channelRouter.param('userId', userById);
  *                 type: string
  *               tag:
  *                 type: string
- *                 format: password
  *               isPrivate:
  *                 type: boolean
  *             required:
@@ -70,11 +62,11 @@ channelRouter.post('/channel', isAuth, createChannel);
 
 /**
  * @swagger
- * /channel/:channelId/leave:
+ * /channel/{channelId}/leave:
  *   post:
  *     parameters:
  *       - in: path
- *         name: 'channelId'
+ *         name: channelId
  *         schema:
  *           type: sting
  *         required:
@@ -102,17 +94,17 @@ channelRouter.post('/channel/:channelId/leave', isAuth, isChannelMember, leaveFr
 
 /**
  * @swagger
- * /channel/:channelId/addMember/:userId:
+ * /channel/{channelId}/addMember/{userId}:
  *   post:
  *     parameters:
  *       - in: path
- *         name: 'channelId'
+ *         name: channelId
  *         schema:
  *           type: sting
  *         required:
  *           true
  *       - in: path
- *         name: 'userId'
+ *         name: userId
  *         schema:
  *           type: sting
  *         required:
@@ -141,17 +133,17 @@ channelRouter.post('/channel/:channelId/addMember/:userId', isAuth, isChannelOwn
 
 /**
  * @swagger
- * /channel/:channelId/kickOut/:userId:
+ * /channel/{channelId}/kickOut/{userId}:
  *   post:
  *     parameters:
  *       - in: path
- *         name: 'channelId'
+ *         name: channelId
  *         schema:
  *           type: sting
  *         required:
  *           true
  *       - in: path
- *         name: 'userId'
+ *         name: userId
  *         schema:
  *           type: sting
  *         required:
@@ -207,13 +199,13 @@ channelRouter.get('/channel/my', isAuth, getMyChannels);
 
 /**
  * @swagger
- * /channel/:channelId:
+ * /channel/{channelId}:
  *   get:
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: 'channelId'
+ *         name: channelId
  *         schema:
  *           type: sting
  *         required:
@@ -236,13 +228,13 @@ channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
 
 /**
  * @swagger
- * /channel/:channelId:
+ * /channel/{channelId}:
  *   delete:
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: 'channelId'
+ *         name: channelId
  *         schema:
  *           type: sting
  *         required:
