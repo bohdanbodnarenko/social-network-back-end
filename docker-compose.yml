@@ -1,19 +1,23 @@
 version: '3.7'
 services:
     db:
+        container_name: 'social-network-db'
         image: postgres
+        volumes:
+            - ./pg-init-scripts:/docker-entrypoint-initdb.d
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
-            - POSTGRES_DB=social-network
+            - POSTGRES_MULTIPLE_DATABASES=social_network_dev,social_network_test
         ports:
             - '5432:5432'
     redis:
+        container_name: 'social-network-db-redis'
         image: redis
         ports:
             - '6379:6379'
-
     backend:
+        container_name: 'social-network-db-back-end'
         build: ./
         ports:
             - '4000:4000'

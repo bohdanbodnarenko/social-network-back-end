@@ -13,6 +13,4 @@ COPY ormconfig.docker.json ./ormconfig.json
 RUN npm install
 #RUN npm run build
 
-CMD ["node", "dist/index.js"]
-
-USER node
+CMD ["npm", "start"]

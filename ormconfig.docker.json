@@ -5,7 +5,7 @@
     "port": 5432,
     "username": "postgres",
     "password": "postgres",
-    "database": "social-network-dev",
+    "database": "social_network_dev",
     "synchronize": true,
     "logging": false,
     "entities": ["src/entity/**/*.ts"],
