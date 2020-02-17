@@ -13,6 +13,7 @@ import { hash } from 'bcryptjs';
 import { Channel } from './Channel';
 import { Message } from './Message';
 import { Post } from './Post';
+import { Subscription } from './Subscription';
 
 /**
  * @swagger
@@ -126,19 +127,17 @@ export class User extends BaseEntity {
     @JoinTable({ name: 'user_channel' })
     channels: Channel[];
 
-    @ManyToMany(
-        () => User,
-        user => user.following,
-        { nullable: true },
+    @OneToMany(
+        () => Subscription,
+        subscription => subscription.subscriber,
     )
-    @JoinTable({ name: 'subscription' })
-    followers: User[];
+    subscriptions: Subscription[];
 
-    @ManyToMany(
-        () => User,
-        user => user.followers,
+    @OneToMany(
+        () => Subscription,
+        subscription => subscription.subscribedTo,
     )
-    following: User[];
+    subscribers: Subscription[];
 
     @BeforeInsert()
     async hashPasswordBeforeInsert(): Promise<void> {
