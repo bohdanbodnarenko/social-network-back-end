@@ -12,12 +12,12 @@ services:
         ports:
             - '5432:5432'
     redis:
-        container_name: 'social-network-db-redis'
+        container_name: 'social-network-redis'
         image: redis
         ports:
             - '6379:6379'
     backend:
-        container_name: 'social-network-db-back-end'
+        container_name: 'social-network-back-end'
         build: ./
         ports:
             - '4000:4000'

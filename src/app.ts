@@ -14,7 +14,10 @@ const RedisStore = connectRedis(session);
 
 export const app = express();
 
-app.use(weblogger);
+if (process.env.NODE_ENV !== 'test') {
+    app.use(weblogger);
+}
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,7 +36,7 @@ app.use(
 app.use(
     session({
         store: new RedisStore({
-            client: redis as any,
+            client: redis,
             prefix: 'sess:',
         }),
         name: 'qid',
