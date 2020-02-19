@@ -24,5 +24,5 @@ export const swaggerDocument = {
         consumes: ['application/json', 'multipart/form-data'],
         produces: ['application/json', 'multipart/form-data'],
     },
-    apis: ['./src/**/*.routes.ts', './src/entity/**/*.ts'],
+    apis: ['./src/**/*.routes.ts', './src/entity/**/*.ts', './src/modules/shared/constants/interfaces.ts'],
 };

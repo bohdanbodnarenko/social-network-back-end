@@ -1,28 +1,96 @@
-import { AuthReq } from '../shared/constants/interfaces';
+import * as _ from 'lodash';
+
+import { AuthReq, UserByIdReq } from '../shared/constants/interfaces';
 import { Response } from 'express';
+import { Subscription } from '../../entity/Subscription';
 
-export const subscribeToUser = async (req: AuthReq, res: Response): Promise<Response> => {
-    const {
-        user,
-        params: { userId },
-    } = req;
+export const subscribeToUser = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
+    const { user, userById } = req;
 
-    // if (user.id === userById.id) {
-    //     return res.status(400).json({ error: "You can't follow yourself" });
-    // }
-    //
-    // const [{ following }] = await User.createQueryBuilder('user')
-    //     .leftJoinAndSelect('user.following', 'following')
-    //     .where('user.id = :userId', { userId: user.id })
-    //     .getMany();
-    //
-    // console.log(following.map(({ id }) => id));
-    // if (following.map(({ id }) => id).includes(userById.id)) {
-    //     return res.status(401).json({ error: 'You follow this user already' });
-    // }
-    //
-    // user.following.push(userById);
-    // await user.save();
+    if (user.id === userById.id) {
+        return res.status(400).json({ error: "You can't follow yourself" });
+    }
+    const alreadyFollowing = await Subscription.findOne({ where: { subscriber: user.id, subscribedTo: userById.id } });
+    if (alreadyFollowing) {
+        return res.status(403).json({ error: 'You are already followed to this user' });
+    }
+
+    await Subscription.create({ subscriber: user, subscribedTo: userById }).save();
 
     return res.json({ message: 'Ok' });
+};
+
+export const unsubscribeFromUser = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
+    const { user, userById } = req;
+
+    if (user.id === userById.id) {
+        return res.status(400).json({ error: "You can't un follow yourself" });
+    }
+
+    const alreadyFollowing = await Subscription.findOne({ where: { subscriber: user.id, subscribedTo: userById.id } });
+    if (!alreadyFollowing) {
+        return res.status(403).json({ error: 'You are not followed to this user' });
+    }
+
+    await Subscription.delete({ subscriber: user, subscribedTo: userById });
+
+    return res.json({ message: 'Ok' });
+};
+
+export const getFollowingCount = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
+    const { userById } = req;
+    const following = await Subscription.find({ where: { subscriber: userById } });
+    return res.json({ count: following.length });
+};
+
+export const getFollowersCount = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
+    const { userById } = req;
+    const followers = await Subscription.find({ where: { subscriberTo: userById } });
+    return res.json({ count: followers.length });
+};
+
+export const getFollowers = async (req: UserByIdReq, res: Response): Promise<Response> => {
+    const {
+        userById,
+        query: { limit, offset, online },
+    } = req;
+    const followers = await Subscription.createQueryBuilder('subscription')
+        .leftJoinAndSelect('subscription.subscriber', 'subscriber')
+        .where(
+            online === undefined
+                ? 'subscription.subscribedTo = :userId'
+                : 'subscription.subscribedTo = :userId and subscriber.online = :online',
+            { userId: userById.id, online },
+        )
+        .skip(offset || 0)
+        .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
+        .getMany();
+    return res.json(
+        followers.map(({ subscriber }) =>
+            _.pick(subscriber, ['id', 'email', 'firstName', 'lastName', 'online', 'lastActive']),
+        ),
+    );
+};
+
+export const getFollowing = async (req: UserByIdReq, res: Response): Promise<Response> => {
+    const {
+        userById,
+        query: { limit, offset, online },
+    } = req;
+    const following = await Subscription.createQueryBuilder('subscription')
+        .leftJoinAndSelect('subscription.subscribedTo', 'subscribedTo')
+        .where(
+            online === undefined
+                ? 'subscription.subscriber = :userId'
+                : 'subscription.subscriber = :userId and subscribedTo.online = :online',
+            { userId: userById.id, online },
+        )
+        .skip(offset || 0)
+        .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
+        .getMany();
+    return res.json(
+        following.map(({ subscribedTo }) =>
+            _.pick(subscribedTo, ['id', 'email', 'firstName', 'lastName', 'online', 'lastActive']),
+        ),
+    );
 };
