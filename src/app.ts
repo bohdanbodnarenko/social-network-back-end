@@ -5,6 +5,7 @@ import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 import * as RateLimit from 'express-rate-limit';
 import * as RateLimitRedisStore from 'rate-limit-redis';
+import * as helmet from 'helmet';
 
 import { weblogger } from './utils/logger';
 import { redis } from './redis';
@@ -16,6 +17,7 @@ export const app = express();
 
 if (process.env.NODE_ENV !== 'test') {
     app.use(weblogger);
+    app.use(helmet());
 }
 
 app.use(cors());

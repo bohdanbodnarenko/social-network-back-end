@@ -12,6 +12,7 @@
     "author": "bogdanbodnarenko",
     "license": "ISC",
     "dependencies": {
+        "@types/helmet": "^0.0.45",
         "async": "^3.1.0",
         "axios": "^0.19.1",
         "bcryptjs": "^2.4.3",
@@ -23,6 +24,7 @@
         "express-session": "^1.17.0",
         "express-winston": "^3.3.0",
         "faker": "^4.1.0",
+        "helmet": "^3.21.2",
         "ioredis": "^4.14.1",
         "jsonwebtoken": "^8.5.1",
         "lodash": "^4.17.15",
