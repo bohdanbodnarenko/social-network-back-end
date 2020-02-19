@@ -15,7 +15,6 @@ const users: User[] = [],
 
 beforeAll(async () => {
     await createTypeormConn();
-    console.log(await User.find());
     for (let i = 0; i < GENERATE_USERS_COUNT; i++) {
         passwords.push(faker.internet.password());
     }
@@ -61,7 +60,6 @@ describe('User routes', () => {
             .set('Accept', 'application/json')
             .expect(404, { error: 'User not found' }, done);
     });
-    //TODO make a resolver and test
     it('should all a users', done => {
         request
             .get('/user/all')
@@ -70,11 +68,6 @@ describe('User routes', () => {
             .end((err, res: Response) => {
                 if (err) done(err);
                 expect(res.body.length).toBe(3);
-                // const { email, firstName, lastName, password } = res.body;
-                // expect(email).toEqual(users[0].email);
-                // expect(password).toBeUndefined();
-                // expect(firstName).toEqual(users[0].firstName);
-                // expect(lastName).toEqual(users[0].lastName);
                 done();
             });
     });
