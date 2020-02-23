@@ -38,6 +38,9 @@ export class Post extends BaseEntity {
     @CreateDateColumn({ default: new Date() })
     created: Date;
 
+    @Column({ type: 'date', nullable: true })
+    updated: Date;
+
     @OneToMany(
         () => Comment,
         comment => comment.post,

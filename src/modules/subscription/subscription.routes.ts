@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { isAuth } from '../shared/middlewares/isAuth';
+import { isAuth } from '../shared/middlewares';
 import {
     getFollowersCount,
     getFollowingCount,

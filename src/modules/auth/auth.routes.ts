@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuth } from '../shared/middlewares/isAuth';
+import { isAuth } from '../shared/middlewares';
 import { changePassword, confirmEmail, login, me, registerUser, sendForgotPasswordEmail } from './auth.controller';
 
 /**

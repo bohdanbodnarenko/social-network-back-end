@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { Channel, User } from '../../../entity';
+import { Channel, Post, User } from '../../../entity';
 
 // USER
 export interface AuthReq extends Request {
@@ -10,6 +10,10 @@ export interface AuthReq extends Request {
 
 export interface UserByIdReq extends Request {
     userById: User;
+}
+
+export interface PostByIdReq extends Request {
+    post: Post;
 }
 
 /**

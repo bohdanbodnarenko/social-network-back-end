@@ -10,10 +10,8 @@ import {
     kickOutFromChannel,
     leaveFromChannel,
 } from './channel.controller';
-import { isAuth } from '../shared/middlewares/isAuth';
-import { isChannelMember } from '../shared/middlewares/isChannelMember';
 import { userById } from '../user/user.controller';
-import { isChannelOwner } from '../shared/middlewares/isChannelOwner';
+import { isAuth, isChannelMember, isChannelOwner } from '../shared/middlewares';
 
 export const channelRouter = Router();
 

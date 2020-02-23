@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { getUser, getUsers, updateUser, userById } from './user.controller';
-import { isAuth } from '../shared/middlewares/isAuth';
+import { isAuth } from '../shared/middlewares';
 
 export const userRouter = Router();
 
