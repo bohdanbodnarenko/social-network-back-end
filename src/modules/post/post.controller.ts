@@ -1,34 +1,64 @@
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import * as _ from 'lodash';
+import { In } from 'typeorm';
 
-import { AuthReq } from '../shared/constants/interfaces';
+import { AuthReq, PostByIdReq } from '../shared/constants/interfaces';
 import { validPostSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
-import { Post, User } from '../../entity';
+import { Post } from '../../entity';
+import { Subscription } from '../../entity/Subscription';
+
+export const postById = async (req: PostByIdReq, res: Response, next: NextFunction): Promise<Response> => {
+    const { postId } = req.params;
+    const post = await Post.findOne({ where: { id: +postId }, relations: ['comments', 'likes', 'owner'] });
+    if (!post) {
+        return res.status(404).json({ error: 'Post not found' });
+    }
+    delete post.owner.password;
+    req.post = post;
+    next();
+};
 
 export const getPosts = async (req: AuthReq, res: Response): Promise<Response> => {
-    const { limit, offset, userId, onlyFollowing } = req.query;
-    let followedIds: User[] = [];
-
-    // TODO finish with following users
+    const {
+        query: { limit, offset, userId, onlyFollowing },
+        user,
+    } = req;
+    let posts: Post[];
     if (onlyFollowing === 'true') {
-        followedIds = await User.createQueryBuilder('user')
-            .innerJoinAndSelect('user.following', 'following')
-            .where('members.id = :userId', { userId: req.user.id })
-            .select('channel')
-            .getMany();
+        const followedIds = (
+            await Subscription.createQueryBuilder('subscription')
+                .innerJoinAndSelect('subscription.subscribedTo', 'user', 'subscription.subscriber = :userId', {
+                    userId: user.id,
+                })
+                .select('user.id')
+                .getMany()
+        ).map(({ subscribedTo: { id } }) => id);
+
+        if (!followedIds.length) {
+            return res.json([]);
+        }
+
+        posts = await Post.find({
+            where: { owner: In(followedIds) },
+            take: limit && limit <= 50 ? limit : 20,
+            skip: offset || 0,
+            order: { created: 'DESC' },
+        });
+    } else {
+        posts = await Post.find({
+            where: userId ? { owner: userId } : {},
+            take: limit && limit <= 50 ? limit : 20,
+            skip: offset || 0,
+            order: { created: 'DESC' },
+        });
     }
 
-    console.log(followedIds);
-
-    const posts = await Post.find({
-        where: userId ? { owner: userId } : onlyFollowing ? {} : {},
-        take: limit && limit <= 50 ? limit : 20,
-        skip: offset || 0,
-        order: { created: 'DESC' },
-    });
-
     return res.json(posts);
+};
+
+export const getPost = async (req: PostByIdReq, res: Response): Promise<Response> => {
+    return res.json(req.post);
 };
 
 export const createPost = async (req: AuthReq, res: Response): Promise<Response> => {
@@ -43,4 +73,18 @@ export const createPost = async (req: AuthReq, res: Response): Promise<Response>
     await newPost.save();
 
     return res.json(newPost);
+};
+
+export const updatePost = async (req: PostByIdReq, res: Response): Promise<Response> => {
+    const { body, post } = req;
+
+    const fieldsToUpdate = _.pick(body, ['title', 'body']);
+    await Post.update(post.id, fieldsToUpdate);
+
+    return res.json({ ...post, ...fieldsToUpdate });
+};
+
+export const deletePost = async (req: PostByIdReq, res: Response): Promise<Response> => {
+    await req.post.remove();
+    return res.json({ message: 'Post deleted successfully' });
 };
