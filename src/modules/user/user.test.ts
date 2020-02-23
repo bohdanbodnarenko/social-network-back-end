@@ -7,7 +7,7 @@ import { User } from '../../entity';
 import { createTypeormConn } from '../../utils/createTypeormConn';
 import { app } from '../../app';
 
-export let request: requests.SuperTest<any>;
+let request: requests.SuperTest<any>;
 
 const users: User[] = [],
     passwords: string[] = [],

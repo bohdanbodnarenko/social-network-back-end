@@ -74,7 +74,7 @@ export class User extends BaseEntity {
     @Column()
     lastName: string;
 
-    @CreateDateColumn({ nullable: true })
+    @Column({ nullable: true })
     dateOfBirth: Date;
 
     @Column({ type: 'text' })

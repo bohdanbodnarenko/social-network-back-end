@@ -6,7 +6,7 @@ import { createTypeormConn } from '../../utils/createTypeormConn';
 import { app } from '../../app';
 import { User } from '../../entity';
 
-export let request: requests.SuperTest<any>, token: string, userId: number, userId1: number;
+let request: requests.SuperTest<any>, token: string, userId: number, userId1: number;
 
 const email = 'testSubscription@test.com',
     password = 'testChannel',

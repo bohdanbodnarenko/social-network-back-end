@@ -6,7 +6,7 @@ import { Channel, User } from '../../entity';
 import { app } from '../../app';
 import { createTypeormConn } from '../../utils/createTypeormConn';
 
-export let request: requests.SuperTest<any>;
+let request: requests.SuperTest<any>;
 
 beforeAll(async () => {
     await createTypeormConn();

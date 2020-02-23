@@ -10,7 +10,7 @@ import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/co
 import { createTypeormConn } from '../../utils/createTypeormConn';
 import { app } from '../../app';
 
-export let request: requests.SuperTest<any>;
+let request: requests.SuperTest<any>;
 
 beforeAll(async () => {
     await createTypeormConn();
