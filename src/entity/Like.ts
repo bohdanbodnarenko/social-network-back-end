@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { BaseEntity, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Post } from './Post';
 import { User } from './User';
 
@@ -31,4 +31,7 @@ export class Like extends BaseEntity {
     @OneToOne(() => User, { primary: true })
     @JoinColumn()
     user: User;
+
+    @CreateDateColumn()
+    date: Date;
 }
