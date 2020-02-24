@@ -10,6 +10,10 @@ import { Subscription } from '../../entity/Subscription';
 
 export const postById = async (req: PostByIdReq, res: Response, next: NextFunction): Promise<Response> => {
     const { postId } = req.params;
+    if (!+postId) {
+        return res.status(400).json({ error: 'Not valid post id' });
+    }
+
     const post = await Post.findOne({ where: { id: +postId }, relations: ['comments', 'likes', 'owner'] });
     if (!post) {
         return res.status(404).json({ error: 'Post not found' });
@@ -79,7 +83,7 @@ export const updatePost = async (req: PostByIdReq, res: Response): Promise<Respo
     const { body, post } = req;
 
     const fieldsToUpdate = _.pick(body, ['title', 'body']);
-    await Post.update(post.id, fieldsToUpdate);
+    await Post.update(post.id, { ...fieldsToUpdate, updated: new Date() });
 
     return res.json({ ...post, ...fieldsToUpdate });
 };

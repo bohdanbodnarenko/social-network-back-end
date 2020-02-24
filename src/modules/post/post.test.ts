@@ -1,10 +1,10 @@
 import * as requests from 'supertest';
+import { Response } from 'supertest';
 import axios from 'axios';
 
 import { createTypeormConn } from '../../utils/createTypeormConn';
 import { app } from '../../app';
 import { User } from '../../entity';
-import { Response } from 'supertest';
 
 let request: requests.SuperTest<any>, token: string, token1: string;
 
