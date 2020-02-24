@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import * as _ from 'lodash';
 
 import { User } from '../../entity';
@@ -25,7 +25,7 @@ export const userById = async (
 
 export const getUser = (req: UserByIdReq, res: Response): Response => res.json(req.userById);
 
-export const getUsers = async (req: UserByIdReq, res: Response): Promise<Response> => {
+export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     const { offset, limit } = req.query;
     return res.json(await User.find({ skip: +offset || 0, take: +limit || 50 }));
 };
