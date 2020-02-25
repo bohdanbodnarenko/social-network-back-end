@@ -1,13 +1,4 @@
-import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Post } from './Post';
 import { User } from './User';
 
@@ -46,13 +37,18 @@ export class Comment extends BaseEntity {
     @CreateDateColumn({ default: new Date() })
     created: Date;
 
+    @Column({ type: 'date', nullable: true })
+    updated: Date;
+
     @ManyToOne(
         () => Post,
         post => post.comments,
     )
     post: Post;
 
-    @OneToOne(() => User)
-    @JoinColumn()
+    @ManyToOne(
+        () => User,
+        user => user.comments,
+    )
     sender: User;
 }

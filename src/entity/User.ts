@@ -14,6 +14,7 @@ import { Channel } from './Channel';
 import { Message } from './Message';
 import { Post } from './Post';
 import { Subscription } from './Subscription';
+import { Comment } from './Comment';
 
 /**
  * @swagger
@@ -138,6 +139,12 @@ export class User extends BaseEntity {
         subscription => subscription.subscribedTo,
     )
     subscribers: Subscription[];
+
+    @OneToMany(
+        () => Comment,
+        comment => comment.sender,
+    )
+    comments: Comment[];
 
     @BeforeInsert()
     async hashPasswordBeforeInsert(): Promise<void> {
