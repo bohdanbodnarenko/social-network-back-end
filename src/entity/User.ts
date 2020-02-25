@@ -53,6 +53,9 @@ import { Comment } from './Comment';
  *          forgotPasswordLocked:
  *              type: boolean
  *              description: Is account locked for changing password
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          about:
  *              type: string
  *          online:
@@ -126,6 +129,9 @@ export class User extends BaseEntity {
 
     @Column({ type: 'boolean', nullable: true })
     forgotPasswordLocked: boolean;
+
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
 
     @Column({ type: 'text', nullable: true })
     about: string;

@@ -24,7 +24,7 @@ import { Channel } from './Channel';
  *              format: date-time
  *          sender:
  *              type: object
- *              $ref: '#/components/schemas/User'
+ *              $ref: '#/components/schemas/ShortUser'
  *          channel:
  *              type: object
  *              $ref: '#/components/schemas/Channel'
