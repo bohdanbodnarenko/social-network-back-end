@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { Channel, Post, User } from '../../../entity';
+import { Channel, Comment, Post, User } from '../../../entity';
 
 // USER
 export interface AuthReq extends Request {
@@ -52,7 +52,12 @@ export interface ShortUser {
     lastActive: Date;
 }
 
-//CHANNEL
+// CHANNEL
 export interface ChannelByIdReq extends Request {
     channelById: Channel;
+}
+
+// COMMENT
+export interface CommentByIdReq extends Request {
+    comment: Comment;
 }
