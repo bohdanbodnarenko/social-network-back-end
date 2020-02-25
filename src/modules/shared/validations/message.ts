@@ -1,13 +1,13 @@
 import * as yup from 'yup';
 
-export const validCommentSchema = yup.object().shape({
+export const validMessageSchema = yup.object().shape({
     content: yup
         .string()
         .trim()
         .required(),
 });
 
-export const validUpdateCommentSchema = yup.object().shape({
+export const validUpdateMessageSchema = yup.object().shape({
     content: yup
         .string()
         .trim()

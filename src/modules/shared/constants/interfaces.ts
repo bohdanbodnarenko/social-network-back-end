@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-import { Channel, Comment, Post, User } from '../../../entity';
+import { Channel, Comment, Message, Post, User } from '../../../entity';
 
 // USER
 export interface AuthReq extends Request {
@@ -37,6 +37,9 @@ export interface PostByIdReq extends Request {
  *            type: string
  *            format: email
  *            description: Email for the user, needs to be unique.
+ *          imageUrl:
+ *            type: string
+ *            format: url
  *          online:
  *              type: boolean
  *          lastActive:
@@ -49,6 +52,7 @@ export interface ShortUser {
     firstName: string;
     lastName: string;
     online: boolean;
+    imageUrl?: string;
     lastActive: Date;
 }
 
@@ -60,4 +64,9 @@ export interface ChannelByIdReq extends Request {
 // COMMENT
 export interface CommentByIdReq extends Request {
     comment: Comment;
+}
+
+// MESSAGE
+export interface MessageByIdReq extends Request {
+    message: Message;
 }
