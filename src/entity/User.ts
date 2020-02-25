@@ -60,6 +60,43 @@ import { Comment } from './Comment';
  *          lastActive:
  *              type: string
  *              format: date-time
+ *          ownChannels:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Channel'
+ *              description: 'List of channels where current user is owner'
+ *          messages:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Message'
+ *          posts:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Post'
+ *          channels:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Channel'
+ *              description: 'List of channels where current user is member'
+ *          subscriptions:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Subscription'
+ *          subscribers:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Subscription'
+ *          comments:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Comment'
  */
 @Entity()
 export class User extends BaseEntity {

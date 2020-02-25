@@ -19,6 +19,9 @@ import { User } from './User';
  *          created:
  *              type: string
  *              format: date-time
+ *          updated:
+ *              type: string
+ *              format: date-time
  *          post:
  *              type: object
  *              $ref: '#/components/schemas/Post'

@@ -23,6 +23,22 @@ import { Like } from './Like';
  *          created:
  *              type: string
  *              format: date-time
+ *          updated:
+ *              type: string
+ *              format: date-time
+ *          owner:
+ *              type: object
+ *              $ref: '#/components/schemas/User'
+ *          comments:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Comment'
+ *          likes:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Like'
  */
 @Entity()
 export class Post extends BaseEntity {

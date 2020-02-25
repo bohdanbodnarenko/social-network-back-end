@@ -19,9 +19,15 @@ import { Channel } from './Channel';
  *          created:
  *              type: string
  *              format: date-time
+ *          updated:
+ *              type: string
+ *              format: date-time
  *          sender:
  *              type: object
  *              $ref: '#/components/schemas/User'
+ *          channel:
+ *              type: object
+ *              $ref: '#/components/schemas/Channel'
  */
 @Entity()
 export class Message extends BaseEntity {
@@ -39,6 +45,9 @@ export class Message extends BaseEntity {
         user => user.messages,
     )
     sender: User;
+
+    @Column({ type: 'date', nullable: true })
+    updated: Date;
 
     @ManyToOne(
         () => Channel,
