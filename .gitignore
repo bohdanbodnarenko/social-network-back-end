@@ -65,4 +65,5 @@ typings/
 # dist directory
 dist/
 
-
+# uploads directory
+uploads/
