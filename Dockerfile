@@ -5,11 +5,11 @@ WORKDIR /app
 EXPOSE 4000
 
 COPY . .
-COPY .env.docker ./.env
+COPY .env ./.env
 COPY package.json package.json
-COPY ormconfig.docker.json ./ormconfig.json
+COPY ormconfig.json ./ormconfig.json
 
-#RUN npm install typescript -g
+RUN npm install typescript -g
 RUN npm install
 #RUN npm run build
 
