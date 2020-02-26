@@ -54,6 +54,4 @@ export class Message extends BaseEntity {
         channel => channel.messages,
     )
     channel: Channel;
-
-    //TODO add media content to store in db, separated table to use for user and post as well
 }

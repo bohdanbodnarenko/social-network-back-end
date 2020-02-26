@@ -37,7 +37,6 @@ export const getMyChannels = async (req: AuthReq, res: Response): Promise<Respon
         .select('channel')
         .getMany();
 
-    //TODO do the same for own channels and merge it
     const ownChannels = await Channel.find({ owner: { id: req.user.id } });
 
     return res.json(ownChannels.concat(channels));
