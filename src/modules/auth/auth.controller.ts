@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { v4 } from 'uuid';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import { formatYupError } from '../../utils/formatYupError';
 import { validLoginSchema, validPasswordSchema, validUserSchema } from '../shared/validations/';
@@ -9,7 +11,7 @@ import { User } from '../../entity';
 import { redis } from '../../redis';
 import { emailTransporter } from '../../utils/emailTransporter';
 import { AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
-import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
+import { confirmEmailPrefix, forgotPasswordPrefix, uploadsDir } from '../shared/constants/constants';
 import { UpdateResult } from 'typeorm';
 
 export const me = (req: AuthReq, res: Response): Response => res.json(req.user);
@@ -146,6 +148,9 @@ export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise
     try {
         await validUserSchema.validate(body, { abortEarly: false });
     } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(400).json(formatYupError(err));
     }
 
@@ -157,6 +162,9 @@ export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise
     });
 
     if (userAlreadyExists) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(403).json([
             {
                 path: 'email',

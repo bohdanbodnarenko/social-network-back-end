@@ -1,9 +1,13 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { NextFunction, Response, Request } from 'express';
 import * as _ from 'lodash';
 
 import { User } from '../../entity';
 import { UserByIdReq, AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
-import { shortUserFields } from '../shared/constants/constants';
+import { shortUserFields, uploadsDir } from '../shared/constants/constants';
+import { validUpdateUserSchema } from '../shared/validations';
+import { formatYupError } from '../../utils/formatYupError';
 
 export const userById = async (
     req: UserByIdReq,
@@ -38,6 +42,15 @@ export const updateUser = async (req: AuthReq & ReqWithImageUrl, res: Response):
         body,
         imageUrl,
     } = req;
+
+    try {
+        await validUpdateUserSchema.validate(body, { abortEarly: false });
+    } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
+        return res.status(400).json(formatYupError(err));
+    }
 
     const allowedFieldsToChange = ['firstName', 'lastName', 'dateOfBirth', 'about', 'imageUrl'];
 

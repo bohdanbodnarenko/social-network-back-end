@@ -9,9 +9,10 @@ import {
     getMyChannels,
     kickOutFromChannel,
     leaveFromChannel,
+    updateChannel,
 } from './channel.controller';
 import { userById } from '../user/user.controller';
-import { isAuth, isChannelMember, isChannelOwner } from '../shared/middlewares';
+import { isAuth, isChannelMember, isChannelOwner, saveImage } from '../shared/middlewares';
 
 export const channelRouter = Router();
 
@@ -31,7 +32,7 @@ channelRouter.param('userId', userById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -41,6 +42,9 @@ channelRouter.param('userId', userById);
  *                 type: string
  *               isPrivate:
  *                 type: boolean
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *             required:
  *               - name
  *               - tag
@@ -56,7 +60,7 @@ channelRouter.param('userId', userById);
  *       403:
  *         description: Not logged in
  */
-channelRouter.post('/channel', isAuth, createChannel);
+channelRouter.post('/channel', isAuth, saveImage, createChannel);
 
 /**
  * @swagger
@@ -224,6 +228,8 @@ channelRouter.get('/channel/my', isAuth, getMyChannels);
  */
 channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
 
+channelRouter.put('/channel/:channelId', isAuth, isChannelOwner, updateChannel);
+
 /**
  * @swagger
  * /channel/{channelId}:
@@ -255,4 +261,4 @@ channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
  *       403:
  *         description: Permission denied to delete this channel
  */
-channelRouter.delete('/channel/:channelId', isAuth, isChannelOwner, deleteChannel);
+channelRouter.delete('/channel/:channelId', isAuth, isChannelOwner, saveImage, deleteChannel);

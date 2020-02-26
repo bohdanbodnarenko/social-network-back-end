@@ -189,6 +189,23 @@ describe('Channel routes', () => {
         expect(data.length).toBe(1);
         done();
     });
+    it('should update a channel', done => {
+        const newName = 'new Channel name',
+            newIsPrivate = false;
+        request
+            .put(`/channel/${channelId}`)
+            .send({ name: newName, isPrivate: newIsPrivate })
+            .set('Accept', 'application/json')
+            .set('Authorization', 'Bearer ' + token)
+            .expect(200)
+            .end(async err => {
+                if (err) done(err);
+                const channel = await Channel.findOne({ id: channelId });
+                expect(channel.name).toBe(newName);
+                expect(channel.isPrivate).toBe(newIsPrivate);
+                done();
+            });
+    });
     it('should delete a channel', done => {
         request
             .delete(`/channel/${channelId}`)

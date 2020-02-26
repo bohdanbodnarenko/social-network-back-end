@@ -40,7 +40,7 @@ export const validLoginSchema = yup.object().shape({
     password: validPasswordSchema,
 });
 
-export const updateUserSchema = yup.object().shape({
+export const validUpdateUserSchema = yup.object().shape({
     firstName: yup
         .string()
         .min(3, firstNameNotLongEnough)

@@ -20,6 +20,9 @@ import { Message } from './Message';
  *            description: The unique tag of the channel.
  *          isPrivate:
  *              type: boolean
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          owner:
  *              type: object
  *              $ref: '#/components/schemas/User'

@@ -1,8 +1,13 @@
-import { AuthReq, ChannelByIdReq, UserByIdReq } from '../shared/constants/interfaces';
 import { Response, NextFunction } from 'express';
-import { validChannelSchema } from '../shared/validations';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as _ from 'lodash';
+
+import { AuthReq, ChannelByIdReq, ReqWithImageUrl, UserByIdReq } from '../shared/constants/interfaces';
+import { validChannelSchema, validUpdateChannelSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
 import { Channel } from '../../entity';
+import { uploadsDir } from '../shared/constants/constants';
 
 export const channelById = async (
     req: ChannelByIdReq,
@@ -42,12 +47,15 @@ export const getMyChannels = async (req: AuthReq, res: Response): Promise<Respon
     return res.json(ownChannels.concat(channels));
 };
 
-export const createChannel = async (req: AuthReq, res: Response): Promise<Response> => {
-    const { body, user } = req;
+export const createChannel = async (req: AuthReq & ReqWithImageUrl, res: Response): Promise<Response> => {
+    const { body, user, imageUrl } = req;
 
     try {
         await validChannelSchema.validate(body, { abortEarly: false });
     } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(400).json(formatYupError(err));
     }
 
@@ -57,6 +65,9 @@ export const createChannel = async (req: AuthReq, res: Response): Promise<Respon
     });
 
     if (channelAlreadyExists) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(401).json([
             {
                 path: 'tag',
@@ -65,7 +76,7 @@ export const createChannel = async (req: AuthReq, res: Response): Promise<Respon
         ]);
     }
 
-    const channel = Channel.create(body);
+    const channel = Channel.create({ ...body, imageUrl });
 
     channel.owner = user;
 
@@ -113,6 +124,22 @@ export const kickOutFromChannel = async (
     await channelById.save();
 
     return res.json({ message: 'Success' });
+};
+
+export const updateChannel = async (req: ReqWithImageUrl & ChannelByIdReq, res: Response): Promise<Response> => {
+    const { imageUrl, body, channelById } = req;
+    try {
+        await validUpdateChannelSchema.validate(body, { abortEarly: false });
+    } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
+        return res.status(400).json(formatYupError(err));
+    }
+    const fieldsFromBody = _.pick(body, ['name', 'isPrivate']);
+    await Channel.update({ id: channelById.id }, { ...fieldsFromBody, imageUrl });
+    const channel = await Channel.findOne({ id: channelById.id });
+    return res.json(channel);
 };
 
 export const deleteChannel = async (req: AuthReq & ChannelByIdReq, res: Response): Promise<Response> => {
