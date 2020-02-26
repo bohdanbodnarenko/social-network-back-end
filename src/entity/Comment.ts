@@ -19,6 +19,9 @@ import { User } from './User';
  *          created:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          updated:
  *              type: string
  *              format: date-time
