@@ -48,6 +48,9 @@ export class Channel extends BaseEntity {
     @Column({ type: 'boolean', default: true })
     isPrivate: boolean;
 
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
+
     @ManyToOne(
         () => User,
         user => user.ownChannels,

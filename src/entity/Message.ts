@@ -40,6 +40,9 @@ export class Message extends BaseEntity {
     @CreateDateColumn({ default: new Date() })
     created: Date;
 
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
+
     @ManyToOne(
         () => User,
         user => user.messages,

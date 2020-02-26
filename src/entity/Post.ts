@@ -57,6 +57,9 @@ export class Post extends BaseEntity {
     @Column({ type: 'date', nullable: true })
     updated: Date;
 
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
+
     @OneToMany(
         () => Comment,
         comment => comment.post,
