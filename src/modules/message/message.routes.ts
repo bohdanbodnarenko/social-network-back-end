@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { channelById } from '../channel/channel.controller';
-import { isAuth, isChannelMember, isMessageOwner } from '../shared/middlewares';
+import { isAuth, isChannelMember, isMessageOwner, saveImage } from '../shared/middlewares';
 import { createMessage, deleteMessages, getMessages, messageById, updateMessage } from './message.controller';
 
 export const messageRouter = Router();
@@ -72,6 +72,20 @@ messageRouter.get('/message/all/:channelId', isAuth, isChannelMember, getMessage
  *       - Message
  *     name: Create message
  *     summary: Creates a message
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               content:
+ *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
+ *             required:
+ *               - content
  *     responses:
  *       200:
  *         description: Creates a message
@@ -87,7 +101,7 @@ messageRouter.get('/message/all/:channelId', isAuth, isChannelMember, getMessage
  *       404:
  *         description: 'Channel not found'
  */
-messageRouter.post('/message/:channelId', isAuth, isChannelMember, createMessage);
+messageRouter.post('/message/:channelId', isAuth, isChannelMember, saveImage, createMessage);
 
 /**
  * @swagger

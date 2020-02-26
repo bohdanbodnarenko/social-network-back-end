@@ -22,6 +22,9 @@ import { Channel } from './Channel';
  *          updated:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          sender:
  *              type: object
  *              $ref: '#/components/schemas/ShortUser'

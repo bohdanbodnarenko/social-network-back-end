@@ -2,11 +2,13 @@ import { NextFunction, Response } from 'express';
 import * as _ from 'lodash';
 import { In } from 'typeorm';
 
-import { AuthReq, ChannelByIdReq, MessageByIdReq } from '../shared/constants/interfaces';
-import { validMessageSchema, validUpdateMessageSchema } from '../shared/validations';
+import { AuthReq, ChannelByIdReq, MessageByIdReq, ReqWithImageUrl } from '../shared/constants/interfaces';
+import { validMessageSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
 import { Message } from '../../entity';
-import { shortUserFields } from '../shared/constants/constants';
+import { shortUserFields, uploadsDir } from '../shared/constants/constants';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export const messageById = async (
     req: AuthReq & MessageByIdReq,
@@ -43,15 +45,24 @@ export const getMessages = async (req: AuthReq & ChannelByIdReq, res: Response):
     return res.json(messagesToSend);
 };
 
-export const createMessage = async (req: AuthReq & ChannelByIdReq, res: Response): Promise<Response> => {
-    const { user, channelById, body } = req;
+export const createMessage = async (
+    req: AuthReq & ChannelByIdReq & ReqWithImageUrl,
+    res: Response,
+): Promise<Response> => {
+    const { user, channelById, body, imageUrl } = req;
     try {
         await validMessageSchema.validate(body, { abortEarly: false });
     } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(400).json(formatYupError(err));
     }
     const bodyFields = _.pick(body, ['content']);
-    const message = Message.create({ ...bodyFields, sender: user, channel: channelById });
+    if (!body.content && !imageUrl) {
+        return res.status(400).json({ error: 'Content or image should be passed' });
+    }
+    const message = Message.create({ ...bodyFields, sender: user, channel: channelById, imageUrl });
     await message.save();
     return res.json(message);
 };
@@ -59,7 +70,7 @@ export const createMessage = async (req: AuthReq & ChannelByIdReq, res: Response
 export const updateMessage = async (req: AuthReq & MessageByIdReq, res: Response): Promise<Response> => {
     const { message, body } = req;
     try {
-        await validUpdateMessageSchema.validate(body, { abortEarly: false });
+        await validMessageSchema.validate(body, { abortEarly: false });
     } catch (err) {
         return res.status(400).json(formatYupError(err));
     }

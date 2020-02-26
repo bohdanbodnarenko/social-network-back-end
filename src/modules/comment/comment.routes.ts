@@ -29,7 +29,7 @@ commentRouter.param('commentId', commentById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -70,7 +70,7 @@ commentRouter.post('/comment/:postId', isAuth, saveImage, createComment);
  *     name: Update comment
  *     summary: Updates a comment
  *     content:
- *       application/json:
+ *       multipart/form-data:
  *         schema:
  *           type: object
  *           properties:
