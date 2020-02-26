@@ -5,9 +5,6 @@ WORKDIR /app
 EXPOSE 4000
 
 COPY . .
-COPY .env ./.env
-COPY package.json package.json
-COPY ormconfig.json ./ormconfig.json
 
 RUN npm install typescript -g
 RUN npm install
