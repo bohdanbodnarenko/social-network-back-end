@@ -70,3 +70,8 @@ export interface CommentByIdReq extends Request {
 export interface MessageByIdReq extends Request {
     message: Message;
 }
+
+// Image
+export interface ReqWithImageUrl extends Request {
+    imageUrl: string;
+}

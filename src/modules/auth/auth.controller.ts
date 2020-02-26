@@ -8,7 +8,7 @@ import { validLoginSchema, validPasswordSchema, validUserSchema } from '../share
 import { User } from '../../entity';
 import { redis } from '../../redis';
 import { emailTransporter } from '../../utils/emailTransporter';
-import { AuthReq } from '../shared/constants/interfaces';
+import { AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
 import { UpdateResult } from 'typeorm';
 
@@ -140,8 +140,8 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     return res.json({ message: 'Password successfully changed' });
 };
 
-export const registerUser = async (req: Request, res: Response): Promise<Response> => {
-    const { body } = req;
+export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise<Response> => {
+    const { body, imageUrl } = req;
 
     try {
         await validUserSchema.validate(body, { abortEarly: false });
@@ -165,7 +165,7 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
         ]);
     }
 
-    const user = User.create(body);
+    const user = User.create({ ...body, imageUrl });
     await user.save();
 
     const id = v4();
