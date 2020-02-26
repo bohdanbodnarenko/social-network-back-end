@@ -24,7 +24,7 @@ export const validUserSchema = yup.object().shape({
     password: validPasswordSchema,
     firstName: yup
         .string()
-        .min(6, firstNameNotLongEnough)
+        .min(3, firstNameNotLongEnough)
         .max(100)
         .required(),
     lastName: yup
@@ -38,4 +38,16 @@ export const validUserSchema = yup.object().shape({
 export const validLoginSchema = yup.object().shape({
     email,
     password: validPasswordSchema,
+});
+
+export const updateUserSchema = yup.object().shape({
+    firstName: yup
+        .string()
+        .min(3, firstNameNotLongEnough)
+        .max(100),
+    lastName: yup
+        .string()
+        .min(3, lastNameNotLongEnough)
+        .max(100),
+    dateOfBirth: yup.date(),
 });
