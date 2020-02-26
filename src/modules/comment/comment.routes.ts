@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { commentById, createComment, deleteComment, updateComment } from './comment.controller';
-import { isAuth, isCommentOwner } from '../shared/middlewares';
+import { isAuth, isCommentOwner, saveImage } from '../shared/middlewares';
 import { postById } from '../post/post.controller';
 
 export const commentRouter = Router();
@@ -35,6 +35,9 @@ commentRouter.param('commentId', commentById);
  *             properties:
  *               content:
  *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *             required:
  *               - content
  *     responses:
@@ -47,7 +50,7 @@ commentRouter.param('commentId', commentById);
  *       403:
  *         description: Not logged in
  */
-commentRouter.post('/comment/:postId', isAuth, createComment);
+commentRouter.post('/comment/:postId', isAuth, saveImage, createComment);
 
 /**
  * @swagger
@@ -73,6 +76,9 @@ commentRouter.post('/comment/:postId', isAuth, createComment);
  *           properties:
  *             content:
  *               type: string
+ *             imageUrl:
+ *               type: string
+ *               format: binary
  *     responses:
  *       200:
  *         description: Comment updated successfully
@@ -85,7 +91,7 @@ commentRouter.post('/comment/:postId', isAuth, createComment);
  *       404:
  *         description: Comment not found
  */
-commentRouter.put('/comment/:commentId', isAuth, isCommentOwner, updateComment);
+commentRouter.put('/comment/:commentId', isAuth, isCommentOwner, saveImage, updateComment);
 
 /**
  * @swagger

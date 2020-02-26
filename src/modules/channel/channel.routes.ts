@@ -50,7 +50,7 @@ channelRouter.param('userId', userById);
  *               - tag
  *     responses:
  *       200:
- *         description: User found and logged in successfully
+ *         description: Channel created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -228,6 +228,49 @@ channelRouter.get('/channel/my', isAuth, getMyChannels);
  */
 channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
 
+/**
+ * @swagger
+ * /channel/{channelId}:
+ *   put:
+ *     parameters:
+ *       - in: path
+ *         name: channelId
+ *         schema:
+ *           type: sting
+ *         required:
+ *           true
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Channel
+ *     name: Update channel
+ *     summary: Update a channel by id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               isPrivate:
+ *                 type: boolean
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Channel updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Channel'
+ *       400:
+ *         description: Bad fields in request
+ *       403:
+ *         description: Not logged in
+ */
 channelRouter.put('/channel/:channelId', isAuth, isChannelOwner, updateChannel);
 
 /**
