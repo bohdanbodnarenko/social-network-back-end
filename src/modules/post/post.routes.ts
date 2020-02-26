@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { createPost, deletePost, getPost, getPosts, postById, updatePost } from './post.controller';
-import { isAuth, isPostOwner } from '../shared/middlewares';
+import { isAuth, isPostOwner, saveImage } from '../shared/middlewares';
 
 export const postRouter = Router();
 
@@ -102,7 +102,7 @@ postRouter.get('/post/:postId', isAuth, getPost);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -110,6 +110,9 @@ postRouter.get('/post/:postId', isAuth, getPost);
  *                 type: string
  *               body:
  *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *             required:
  *               - title
  *               - body
@@ -125,7 +128,7 @@ postRouter.get('/post/:postId', isAuth, getPost);
  *       403:
  *         description: Not logged in
  */
-postRouter.post('/post', isAuth, createPost);
+postRouter.post('/post', isAuth, saveImage, createPost);
 
 /**
  * @swagger
@@ -142,6 +145,20 @@ postRouter.post('/post', isAuth, createPost);
  *       - Post
  *     name: Update post
  *     summary: Updates post by id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               body:
+ *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Updates post by id

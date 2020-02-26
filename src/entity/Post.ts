@@ -26,6 +26,9 @@ import { Like } from './Like';
  *          updated:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          owner:
  *              type: object
  *              $ref: '#/components/schemas/User'

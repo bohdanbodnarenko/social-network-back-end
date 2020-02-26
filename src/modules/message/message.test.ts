@@ -67,7 +67,7 @@ describe('Message routes', () => {
             .send({ content: '' })
             .set('Accept', 'application/json')
             .set('Authorization', 'Bearer ' + token)
-            .expect(400, [{ path: 'content', message: 'content is a required field' }], done);
+            .expect(400, [{ path: 'content', message: 'content must be at least 1 characters' }] , done);
     });
     it('should return a messages', done => {
         request
