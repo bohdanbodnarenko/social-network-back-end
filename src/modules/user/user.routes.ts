@@ -24,6 +24,7 @@ userRouter.param('userId', userById);
  *          type: integer
  *        required:
  *          false
+ *        description: The count of users to fetch, max = 100, default = 50
  *     tags:
  *       - User
  *     name: Get users
@@ -39,7 +40,7 @@ userRouter.param('userId', userById);
  *                 type: object
  *                 properties:
  *                   type:
- *                     $ref: '#/components/schemas/User'
+ *                     $ref: '#/components/schemas/ShortUser'
  */
 userRouter.get('/user/all', getUsers);
 

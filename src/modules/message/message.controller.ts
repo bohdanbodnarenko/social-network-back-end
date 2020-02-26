@@ -6,6 +6,7 @@ import { AuthReq, ChannelByIdReq, MessageByIdReq } from '../shared/constants/int
 import { validMessageSchema, validUpdateMessageSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
 import { Message } from '../../entity';
+import { shortUserFields } from '../shared/constants/constants';
 
 export const messageById = async (
     req: AuthReq & MessageByIdReq,
@@ -37,7 +38,7 @@ export const getMessages = async (req: AuthReq & ChannelByIdReq, res: Response):
     });
     const messagesToSend = messages.map(message => ({
         ...message,
-        sender: _.pick(message.sender, ['id', 'email', 'firstName', 'lastName', 'online', 'imageUrl', 'lastActive']),
+        sender: _.pick(message.sender, shortUserFields),
     }));
     return res.json(messagesToSend);
 };

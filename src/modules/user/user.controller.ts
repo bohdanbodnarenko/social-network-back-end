@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 
 import { User } from '../../entity';
 import { UserByIdReq, AuthReq } from '../shared/constants/interfaces';
+import { shortUserFields } from '../shared/constants/constants';
 
 export const userById = async (
     req: UserByIdReq,
@@ -27,7 +28,12 @@ export const getUser = (req: UserByIdReq, res: Response): Response => res.json(r
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     const { offset, limit } = req.query;
-    return res.json(await User.find({ skip: +offset || 0, take: +limit || 50 }));
+    const users = await User.createQueryBuilder('user')
+        .select(shortUserFields.map(field => 'user.' + field))
+        .skip(+offset || 0)
+        .take(+limit ? (limit < 100 ? limit : 100) : 50)
+        .execute();
+    return res.json(users);
 };
 
 export const updateUser = async (req: AuthReq, res: Response): Promise<Response> => {
