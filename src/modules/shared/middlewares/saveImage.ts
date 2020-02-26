@@ -1,5 +1,6 @@
 import { NextFunction, Response } from 'express';
 import * as imagemin from 'imagemin';
+import * as fs from 'fs';
 import * as imageminMozjpeg from 'imagemin-mozjpeg';
 import imageminPngquant from 'imagemin-pngquant';
 
@@ -18,8 +19,9 @@ export const saveImage = async (req: ReqWithImageUrl, res: Response, next: NextF
         await image.mv(imageName);
         await imagemin([imageName], {
             destination: uploadsDir,
-            plugins: [imageminMozjpeg({ quality: 50 }), imageminPngquant({ quality: [0.4, 0.65] })],
+            plugins: [imageminMozjpeg({ quality: 50 }), imageminPngquant({ quality: [0.6, 0.8] })],
         });
+        fs.unlinkSync(imageName);
 
         req.imageUrl = imageName;
     }
