@@ -14,7 +14,7 @@ import { Like } from './Like';
  *          - body
  *        properties:
  *          id:
- *            type: int
+ *            type: integer
  *          title:
  *            type: string
  *          body:

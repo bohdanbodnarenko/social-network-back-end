@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser';
 import * as RateLimit from 'express-rate-limit';
 import * as RateLimitRedisStore from 'rate-limit-redis';
 import * as helmet from 'helmet';
+import * as fileUpload from 'express-fileupload';
 
 import { weblogger } from './utils/logger';
 import { redis } from './redis';
@@ -22,7 +23,16 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+    fileUpload({
+        createParentPath: true,
+        limits: {
+            fileSize: 4 * 1024 * 1024 * 1024, // 4MB max file size
+        },
+    }),
+);
 
 app.use(
     new RateLimit({

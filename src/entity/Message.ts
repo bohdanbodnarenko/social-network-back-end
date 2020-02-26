@@ -12,7 +12,7 @@ import { Channel } from './Channel';
  *          - content
  *        properties:
  *          id:
- *            type: int
+ *            type: integer
  *          content:
  *            type: string
  *            description: The content of the post.
