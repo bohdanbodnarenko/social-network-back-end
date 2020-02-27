@@ -12,7 +12,7 @@ export const startServer = async (): Promise<Application> => {
         await redis.flushall();
     }
 
-    const port = process.env.EXPRESS_PORT || 4000;
+    const port = process.env.PORT || 4000;
 
     await createTypeormConn();
 
