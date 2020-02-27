@@ -1,5 +1,5 @@
-import { startServer } from './src/startServer';
-import { logger } from './src/utils/logger';
+import { startServer } from './startServer';
+import { logger } from './utils/logger';
 
 // TODO fix build in package.json
 startServer().then(() => {
