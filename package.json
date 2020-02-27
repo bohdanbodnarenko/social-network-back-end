@@ -2,12 +2,12 @@
     "name": "social-network-back-end",
     "version": "0.0.1",
     "description": "Back end for social network",
-    "main": "dist/src/index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "build": "NODE_ENV=production nodemon --exec ts-node src/index.ts",
+        "build": "tsc",
         "dev": "tsc --watch && node dist/src",
         "test": "NODE_ENV=test jest --maxWorkers=1",
-        "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts"
+        "start": "NODE_ENV=development nodemon --exec ts-node index.ts"
     },
     "author": "bogdanbodnarenko",
     "license": "ISC",
