@@ -20,7 +20,7 @@ export const channelById = async (
         channel = await Channel.findOne({ where: { id }, relations: ['owner', 'members'] });
     } catch (e) {
         console.log(e);
-        return res.status(400).json({ error: 'Bad input' });
+        return res.status(400).json({ error: 'Invalid channel id' });
     }
 
     if (!channel) {
