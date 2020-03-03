@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { AuthReq, UserByIdReq } from '../shared/constants/interfaces';
 import { Response } from 'express';
 import { Subscription } from '../../entity/Subscription';
+import { shortUserFields } from '../shared/constants/constants';
 
 export const subscribeToUser = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
     const { user, userById } = req;
@@ -65,11 +66,7 @@ export const getFollowers = async (req: UserByIdReq, res: Response): Promise<Res
         .skip(offset || 0)
         .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
         .getMany();
-    return res.json(
-        followers.map(({ subscriber }) =>
-            _.pick(subscriber, ['id', 'email', 'firstName', 'lastName', 'online', 'lastActive']),
-        ),
-    );
+    return res.json(followers.map(({ subscriber }) => _.pick(subscriber, shortUserFields)));
 };
 
 export const getFollowing = async (req: UserByIdReq, res: Response): Promise<Response> => {
@@ -88,9 +85,5 @@ export const getFollowing = async (req: UserByIdReq, res: Response): Promise<Res
         .skip(offset || 0)
         .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
         .getMany();
-    return res.json(
-        following.map(({ subscribedTo }) =>
-            _.pick(subscribedTo, ['id', 'email', 'firstName', 'lastName', 'online', 'lastActive']),
-        ),
-    );
+    return res.json(following.map(({ subscribedTo }) => _.pick(subscribedTo, shortUserFields)));
 };

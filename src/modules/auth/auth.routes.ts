@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { isAuth } from '../shared/middlewares';
+import { isAuth, saveImage } from '../shared/middlewares';
 import { changePassword, confirmEmail, login, me, registerUser, sendForgotPasswordEmail } from './auth.controller';
 
 /**
@@ -95,7 +95,7 @@ authRouter.get('/confirm/:id', confirmEmail);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -108,6 +108,9 @@ authRouter.get('/confirm/:id', confirmEmail);
  *                 type: string
  *               lastName:
  *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *               dateOfBirth:
  *                 type: string
  *                 format: date-time
@@ -134,7 +137,7 @@ authRouter.get('/confirm/:id', confirmEmail);
  *       403:
  *         description: Email is taken already
  */
-authRouter.post('/register', registerUser);
+authRouter.post('/register', saveImage, registerUser);
 
 /**
  * @swagger

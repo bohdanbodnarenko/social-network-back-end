@@ -5,9 +5,9 @@ WORKDIR /app
 EXPOSE 4000
 
 COPY . .
-COPY .env.docker ./.env
-COPY package.json package.json
-COPY ormconfig.docker.json ./ormconfig.json
+COPY .env.heroku ./.env
+COPY package.json ./package.json
+COPY ormconfig.heroku.json ./ormconfig.json
 
 #RUN npm install typescript -g
 RUN npm install

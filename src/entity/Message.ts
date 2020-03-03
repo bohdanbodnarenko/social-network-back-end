@@ -12,7 +12,7 @@ import { Channel } from './Channel';
  *          - content
  *        properties:
  *          id:
- *            type: int
+ *            type: integer
  *          content:
  *            type: string
  *            description: The content of the post.
@@ -22,6 +22,9 @@ import { Channel } from './Channel';
  *          updated:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          sender:
  *              type: object
  *              $ref: '#/components/schemas/ShortUser'
@@ -40,6 +43,9 @@ export class Message extends BaseEntity {
     @CreateDateColumn({ default: new Date() })
     created: Date;
 
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
+
     @ManyToOne(
         () => User,
         user => user.messages,
@@ -54,6 +60,4 @@ export class Message extends BaseEntity {
         channel => channel.messages,
     )
     channel: Channel;
-
-    //TODO add media content to store in db, separated table to use for user and post as well
 }

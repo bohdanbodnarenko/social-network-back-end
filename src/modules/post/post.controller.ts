@@ -1,12 +1,15 @@
 import { NextFunction, Response } from 'express';
 import * as _ from 'lodash';
 import { In } from 'typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 
-import { AuthReq, PostByIdReq } from '../shared/constants/interfaces';
-import { validPostSchema } from '../shared/validations';
+import { AuthReq, PostByIdReq, ReqWithImageUrl } from '../shared/constants/interfaces';
+import { validPostSchema, validUpdatePostSchema } from '../shared/validations';
 import { formatYupError } from '../../utils/formatYupError';
 import { Post } from '../../entity';
 import { Subscription } from '../../entity/Subscription';
+import { uploadsDir } from '../shared/constants/constants';
 
 export const postById = async (req: PostByIdReq, res: Response, next: NextFunction): Promise<Response> => {
     const { postId } = req.params;
@@ -65,27 +68,39 @@ export const getPost = async (req: PostByIdReq, res: Response): Promise<Response
     return res.json(req.post);
 };
 
-export const createPost = async (req: AuthReq, res: Response): Promise<Response> => {
-    const { user, body } = req;
+export const createPost = async (req: AuthReq & ReqWithImageUrl, res: Response): Promise<Response> => {
+    const { user, body, imageUrl } = req;
     try {
         await validPostSchema.validate(body, { abortEarly: false });
     } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
         return res.status(400).json(formatYupError(err));
     }
 
-    const newPost = Post.create({ ..._.pick(body, ['title', 'body']), owner: user });
+    const newPost = Post.create({ ..._.pick(body, ['title', 'body']), owner: user, imageUrl });
     await newPost.save();
 
     return res.json(newPost);
 };
 
-export const updatePost = async (req: PostByIdReq, res: Response): Promise<Response> => {
-    const { body, post } = req;
+export const updatePost = async (req: PostByIdReq & ReqWithImageUrl, res: Response): Promise<Response> => {
+    const { body, post, imageUrl } = req;
+
+    try {
+        await validUpdatePostSchema.validate(body, { abortEarly: false });
+    } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
+        return res.status(400).json(formatYupError(err));
+    }
 
     const fieldsToUpdate = _.pick(body, ['title', 'body']);
-    await Post.update(post.id, { ...fieldsToUpdate, updated: new Date() });
+    await Post.update(post.id, { ...fieldsToUpdate, updated: new Date(), imageUrl });
 
-    return res.json({ ...post, ...fieldsToUpdate });
+    return res.json({ ...post, ...fieldsToUpdate, imageUrl });
 };
 
 export const deletePost = async (req: PostByIdReq, res: Response): Promise<Response> => {

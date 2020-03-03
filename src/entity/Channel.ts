@@ -20,6 +20,9 @@ import { Message } from './Message';
  *            description: The unique tag of the channel.
  *          isPrivate:
  *              type: boolean
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          owner:
  *              type: object
  *              $ref: '#/components/schemas/User'
@@ -47,6 +50,9 @@ export class Channel extends BaseEntity {
 
     @Column({ type: 'boolean', default: true })
     isPrivate: boolean;
+
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
 
     @ManyToOne(
         () => User,

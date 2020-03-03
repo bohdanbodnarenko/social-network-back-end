@@ -12,13 +12,16 @@ import { User } from './User';
  *          - content
  *        properties:
  *          id:
- *            type: int
+ *            type: integer
  *          content:
  *            type: string
  *            description: The content of the comment.
  *          created:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          updated:
  *              type: string
  *              format: date-time
@@ -42,6 +45,9 @@ export class Comment extends BaseEntity {
 
     @Column({ type: 'date', nullable: true })
     updated: Date;
+
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
 
     @ManyToOne(
         () => Post,

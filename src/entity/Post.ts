@@ -14,7 +14,7 @@ import { Like } from './Like';
  *          - body
  *        properties:
  *          id:
- *            type: int
+ *            type: integer
  *          title:
  *            type: string
  *          body:
@@ -26,6 +26,9 @@ import { Like } from './Like';
  *          updated:
  *              type: string
  *              format: date-time
+ *          imageUrl:
+ *              type: string
+ *              format: url
  *          owner:
  *              type: object
  *              $ref: '#/components/schemas/User'
@@ -56,6 +59,9 @@ export class Post extends BaseEntity {
 
     @Column({ type: 'date', nullable: true })
     updated: Date;
+
+    @Column({ type: 'varchar', length: 200, nullable: true })
+    imageUrl: string;
 
     @OneToMany(
         () => Comment,

@@ -9,9 +9,10 @@ import {
     getMyChannels,
     kickOutFromChannel,
     leaveFromChannel,
+    updateChannel,
 } from './channel.controller';
 import { userById } from '../user/user.controller';
-import { isAuth, isChannelMember, isChannelOwner } from '../shared/middlewares';
+import { isAuth, isChannelMember, isChannelOwner, saveImage } from '../shared/middlewares';
 
 export const channelRouter = Router();
 
@@ -31,7 +32,7 @@ channelRouter.param('userId', userById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -41,12 +42,15 @@ channelRouter.param('userId', userById);
  *                 type: string
  *               isPrivate:
  *                 type: boolean
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *             required:
  *               - name
  *               - tag
  *     responses:
  *       200:
- *         description: User found and logged in successfully
+ *         description: Channel created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +60,7 @@ channelRouter.param('userId', userById);
  *       403:
  *         description: Not logged in
  */
-channelRouter.post('/channel', isAuth, createChannel);
+channelRouter.post('/channel', isAuth, saveImage, createChannel);
 
 /**
  * @swagger
@@ -227,6 +231,51 @@ channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
 /**
  * @swagger
  * /channel/{channelId}:
+ *   put:
+ *     parameters:
+ *       - in: path
+ *         name: channelId
+ *         schema:
+ *           type: sting
+ *         required:
+ *           true
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Channel
+ *     name: Update channel
+ *     summary: Update a channel by id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               isPrivate:
+ *                 type: boolean
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Channel updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Channel'
+ *       400:
+ *         description: Bad fields in request
+ *       403:
+ *         description: Not logged in
+ */
+channelRouter.put('/channel/:channelId', isAuth, isChannelOwner, updateChannel);
+
+/**
+ * @swagger
+ * /channel/{channelId}:
  *   delete:
  *     security:
  *       - bearerAuth: []
@@ -255,4 +304,4 @@ channelRouter.get('/channel/:channelId', isAuth, isChannelMember, getChannel);
  *       403:
  *         description: Permission denied to delete this channel
  */
-channelRouter.delete('/channel/:channelId', isAuth, isChannelOwner, deleteChannel);
+channelRouter.delete('/channel/:channelId', isAuth, isChannelOwner, saveImage, deleteChannel);

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { getUser, getUsers, updateUser, userById } from './user.controller';
-import { isAuth } from '../shared/middlewares';
+import { isAuth, saveImage } from '../shared/middlewares';
 
 export const userRouter = Router();
 
@@ -24,6 +24,7 @@ userRouter.param('userId', userById);
  *          type: integer
  *        required:
  *          false
+ *        description: The count of users to fetch, max = 100, default = 50
  *     tags:
  *       - User
  *     name: Get users
@@ -39,7 +40,7 @@ userRouter.param('userId', userById);
  *                 type: object
  *                 properties:
  *                   type:
- *                     $ref: '#/components/schemas/User'
+ *                     $ref: '#/components/schemas/ShortUser'
  */
 userRouter.get('/user/all', getUsers);
 
@@ -81,7 +82,7 @@ userRouter.get('/user/:userId', getUser);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -94,6 +95,9 @@ userRouter.get('/user/:userId', getUser);
  *                 format: date-tim
  *               about:
  *                 type: string
+ *               imageUrl:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Updates logged in user
@@ -102,4 +106,4 @@ userRouter.get('/user/:userId', getUser);
  *             schema:
  *               $ref: '#/components/schemas/User'
  */
-userRouter.put('/user', isAuth, updateUser);
+userRouter.put('/user', isAuth, saveImage, updateUser);

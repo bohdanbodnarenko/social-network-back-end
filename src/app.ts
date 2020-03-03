@@ -11,6 +11,7 @@ import * as fileUpload from 'express-fileupload';
 import { weblogger } from './utils/logger';
 import { redis } from './redis';
 import * as routes from './modules';
+import { uploadsDir } from './modules/shared/constants/constants';
 
 const RedisStore = connectRedis(session);
 
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(uploadsDir));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
     fileUpload({
@@ -30,6 +32,16 @@ app.use(
     }),
 );
 app.use(express.static('uploads'));
+
+app.use(
+    fileUpload({
+        createParentPath: true,
+        limits: {
+            fileSize: 4 * 1024 * 1024 * 1024, // 4MB max file size
+        },
+        abortOnLimit: true,
+    }),
+);
 
 app.use(
     new RateLimit({

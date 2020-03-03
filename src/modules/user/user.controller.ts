@@ -1,8 +1,13 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { NextFunction, Response, Request } from 'express';
 import * as _ from 'lodash';
 
 import { User } from '../../entity';
-import { UserByIdReq, AuthReq } from '../shared/constants/interfaces';
+import { UserByIdReq, AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
+import { shortUserFields, uploadsDir } from '../shared/constants/constants';
+import { validUpdateUserSchema } from '../shared/validations';
+import { formatYupError } from '../../utils/formatYupError';
 
 export const userById = async (
     req: UserByIdReq,
@@ -27,16 +32,27 @@ export const getUser = (req: UserByIdReq, res: Response): Response => res.json(r
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
     const { offset, limit } = req.query;
-    return res.json(await User.find({ skip: +offset || 0, take: +limit || 50 }));
+    const users = await User.find({ skip: +offset || 0, take: +limit ? (limit < 100 ? limit : 100) : 50 });
+    return res.json(users.map(user => _.pick(user, shortUserFields)));
 };
 
-export const updateUser = async (req: AuthReq, res: Response): Promise<Response> => {
+export const updateUser = async (req: AuthReq & ReqWithImageUrl, res: Response): Promise<Response> => {
     const {
         user: { id, ...user },
         body,
+        imageUrl,
     } = req;
 
-    const allowedFieldsToChange = ['firstName', 'lastName', 'dateOfBirth', 'about'];
+    try {
+        await validUpdateUserSchema.validate(body, { abortEarly: false });
+    } catch (err) {
+        if (imageUrl) {
+            fs.unlinkSync(path.join(uploadsDir, imageUrl));
+        }
+        return res.status(400).json(formatYupError(err));
+    }
+
+    const allowedFieldsToChange = ['firstName', 'lastName', 'dateOfBirth', 'about', 'imageUrl'];
 
     const updatedUser = _.pick(body, allowedFieldsToChange);
     let isUserSame = true;
@@ -52,7 +68,7 @@ export const updateUser = async (req: AuthReq, res: Response): Promise<Response>
         return res.json({ id, ...user });
     }
 
-    await User.update({ id }, { ...updatedUser });
+    await User.update({ id }, { ...updatedUser, imageUrl });
 
     const newUser = await User.findOne(id);
     delete newUser.password;
