@@ -173,7 +173,7 @@ export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise
         ]);
     }
 
-    const user = User.create({ ...body, imageUrl });
+    const user = User.create({ ...body, imageUrl }) as any;
     await user.save();
 
     const id = v4();

@@ -76,7 +76,7 @@ export const createChannel = async (req: AuthReq & ReqWithImageUrl, res: Respons
         ]);
     }
 
-    const channel = Channel.create({ ...body, imageUrl });
+    const channel = Channel.create({ ...body, imageUrl }) as any;
 
     channel.owner = user;
 
