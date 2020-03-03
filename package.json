@@ -4,6 +4,7 @@
     "description": "Back end for social network",
     "main": "dist/index.js",
     "scripts": {
+        "build": "tsc",
         "dev": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
         "test": "NODE_ENV=test jest --maxWorkers=1",
         "start": "ts-node src/index.ts"
