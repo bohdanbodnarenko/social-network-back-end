@@ -6,7 +6,7 @@ export const swaggerDocument = {
 
         info: {
             version: pkg.version,
-            title: 'PeoCon',
+            title: pkg.name,
             description: 'Social network written on NodeJS with modern technologies and unit test',
             contact: {
                 name: 'Bohdan Bodnarenko',

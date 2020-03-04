@@ -1,5 +1,5 @@
 {
-    "name": "peocon-back-end",
+    "name": "peocon-api",
     "version": "0.0.1",
     "description": "Back end for PeoCon - new social network",
     "main": "dist/src/index.js",
