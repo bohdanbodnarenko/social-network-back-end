@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'test') {
     app.use(helmet());
 }
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use(express.static(uploadsDir));
 app.use(bodyParser.urlencoded({ extended: true }));

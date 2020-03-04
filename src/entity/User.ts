@@ -29,7 +29,7 @@ import { Comment } from './Comment';
  *          - lastName
  *        properties:
  *          id:
- *            type: string
+ *            type: integer
  *          firstName:
  *            type: string
  *          lastName:

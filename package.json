@@ -1,7 +1,7 @@
 {
-    "name": "social-network-back-end",
+    "name": "peocon-back-end",
     "version": "0.0.1",
-    "description": "Back end for social network",
+    "description": "Back end for PeoCon - new social network",
     "main": "dist/src/index.js",
     "scripts": {
         "build": "tsc",
