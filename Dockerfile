@@ -1,4 +1,4 @@
-FROM node:11.2-slim
+FROM node
 
 WORKDIR /app
 
@@ -9,6 +9,6 @@ COPY package.json ./package.json
 
 #RUN npm install typescript -g
 RUN npm install
-RUN npm run build
+#RUN npm run build
 
-CMD ["node", "dist/src/"]
+CMD ["npm", "start"]
