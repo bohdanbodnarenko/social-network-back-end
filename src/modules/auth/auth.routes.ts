@@ -109,6 +109,7 @@ authRouter.get('/confirm/:id', confirmEmail);
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
  *               password:
  *                 type: string
  *                 format: password
@@ -286,7 +287,7 @@ authRouter.post('/reset-password/:key', changePassword);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
