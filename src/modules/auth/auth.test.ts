@@ -64,6 +64,25 @@ describe('Auth routes', () => {
                 done,
             );
     });
+    it('should fail without email', done => {
+        request
+            .post(`/send-confirmation`)
+            .set('Accept', 'application/json')
+            .expect(400, [{ path: 'email', message: 'Please provide an email' }], done);
+    });
+    it('should send confirmation again', done => {
+        request
+            .post(`/send-confirmation`)
+            .send({ email })
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end(async err => {
+                if (err) done(err);
+                const keys = await redis.keys(confirmEmailPrefix + '*');
+                expect(keys.length).toBe(2);
+                done();
+            });
+    });
     it('should confirm an email', async done => {
         const [userKey] = await redis.keys(confirmEmailPrefix + '*');
         console.log(userKey);

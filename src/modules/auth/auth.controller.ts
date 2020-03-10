@@ -14,6 +14,35 @@ import { AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { confirmEmailPrefix, forgotPasswordPrefix, uploadsDir } from '../shared/constants/constants';
 import { UpdateResult } from 'typeorm';
 
+const sendConfirmationMail = async (userId: number, email: string): Promise<void> => {
+    const id = v4();
+    const url: string = process.env.API_BASE as string;
+    await redis.set(confirmEmailPrefix + id, userId, 'ex', 60 * 60 * 24);
+    const confirmLink = `${url}/confirm/${id}`;
+    console.log(`Confirm link for ${email} is ${confirmLink}`);
+    if (process.env.NODE_ENV !== 'test') {
+        emailTransporter.sendMail(
+            {
+                to: email,
+                from: 'peocon.com',
+                subject: 'Confirm Email',
+                html: `<html lang="en">
+                  <body>
+                     <p>Thanks for the registration!</p>
+                     <span>
+                        Please confirm your email <a href="${confirmLink}">confirm email</a>
+                     </span>
+                  </body>
+               </html>`,
+            },
+            (err, info) => {
+                if (err) console.error(err);
+                else console.log(info);
+            },
+        );
+    }
+};
+
 export const me = (req: AuthReq, res: Response): Response => res.json(req.user);
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
@@ -142,6 +171,31 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     return res.json({ message: 'Password successfully changed' });
 };
 
+export const sendConfirmationAgain = async (req: Request, res: Response): Promise<Response> => {
+    const {
+        body: { email },
+    } = req;
+    if (!email) {
+        return res.status(400).json([{ path: 'email', message: 'Please provide an email' }]);
+    }
+    const user = await User.findOne({
+        where: { email },
+        select: ['id'],
+    });
+
+    if (!user) {
+        return res.status(400).json([
+            {
+                path: 'email',
+                message: 'User with this email does not exist, please register first',
+            },
+        ]);
+    }
+    await sendConfirmationMail(user.id, email);
+
+    return res.json({ message: 'Confirmation successfully sent' });
+};
+
 export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise<Response> => {
     const { body, imageUrl } = req;
 
@@ -176,33 +230,7 @@ export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise
     const user = User.create({ ...body, imageUrl }) as any;
     await user.save();
 
-    const id = v4();
-    const userId = user.id;
-    const url: string = process.env.API_BASE as string;
-    await redis.set(confirmEmailPrefix + id, userId, 'ex', 60 * 60 * 24);
-    const confirmLink = `${url}/confirm/${id}`;
-    console.log(`Confirm link for ${email} is ${confirmLink}`);
-    if (process.env.NODE_ENV !== 'test') {
-        emailTransporter.sendMail(
-            {
-                to: email,
-                from: 'neople.neo.com',
-                subject: 'Confirm Email',
-                html: `<html lang="en">
-                  <body>
-                     <p>Thanks for the registration!</p>
-                     <span>
-                        Please confirm your email <a href="${confirmLink}">confirm email</a>
-                     </span>
-                  </body>
-               </html>`,
-            },
-            (err, info) => {
-                if (err) console.error(err);
-                else console.log(info);
-            },
-        );
-    }
+    await sendConfirmationMail(user.id, email);
 
     return res.json({ message: 'Registration success' });
 };

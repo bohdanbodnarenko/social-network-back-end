@@ -1,7 +1,15 @@
 import { Router } from 'express';
 
 import { isAuth, saveImage } from '../shared/middlewares';
-import { changePassword, confirmEmail, login, me, registerUser, sendForgotPasswordEmail } from './auth.controller';
+import {
+    changePassword,
+    confirmEmail,
+    login,
+    me,
+    registerUser,
+    sendConfirmationAgain,
+    sendForgotPasswordEmail,
+} from './auth.controller';
 
 /**
  * @swagger
@@ -266,3 +274,40 @@ authRouter.post('/change-password', sendForgotPasswordEmail);
  *         description: Bad id of password reset
  */
 authRouter.post('/reset-password/:key', changePassword);
+
+/**
+ * @swagger
+ * /send-confirmation:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     name: Send confirmation
+ *     summary: Email confirmation link again
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *             required:
+ *               - email
+ *     responses:
+ *       200:
+ *         description: Link emailed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Confirmation successfully sent'
+
+ *       400:
+ *         description: Bad email or user does not exist
+ */
+authRouter.post('/send-confirmation', sendConfirmationAgain);
