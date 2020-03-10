@@ -16,12 +16,12 @@ export const isAuth = async (req: AuthReq, res: Response, next: NextFunction): P
 
     try {
         const { id } = verify(token, process.env.JWT_SECRET as string);
-        const provider = await User.findOne({ id });
-        if (!provider) {
+        const user = await User.findOne({ id });
+        if (!user) {
             return res.status(403).json({ error: 'Wrong access token' });
         }
-        delete provider.password;
-        req.user = provider;
+        delete user.password;
+        req.user = user;
         req.token = token;
         next();
     } catch (error) {

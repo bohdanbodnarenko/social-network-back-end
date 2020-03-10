@@ -109,8 +109,8 @@ export const sendForgotPasswordEmail = async (req: Request, res: Response): Prom
     const id = v4();
     await redis.set(`${forgotPasswordPrefix}${id}`, user.id, 'ex', 60 * 20);
 
-    const recoverLink = `${process.env.API_BASE}/forgot-password/${id}`;
-    console.log(`Recover password link for provider ${email}: ${recoverLink}`);
+    const recoverLink = `${process.env.FRONTEND_HOST}/forgot-password/${id}`;
+    console.log(`Recover password link for user ${email}: ${recoverLink}`);
 
     emailTransporter.sendMail(
         {
@@ -142,7 +142,7 @@ export const changePassword = async (req: Request, res: Response): Promise<Respo
     if (!userId) {
         return res.status(400).json([
             {
-                path: 'key',
+                path: 'password',
                 message: 'Key was expired, please try again',
             },
         ]);
