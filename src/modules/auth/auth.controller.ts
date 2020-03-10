@@ -180,7 +180,6 @@ export const sendConfirmationAgain = async (req: Request, res: Response): Promis
     }
     const user = await User.findOne({
         where: { email },
-        select: ['id'],
     });
 
     if (!user) {
@@ -191,6 +190,16 @@ export const sendConfirmationAgain = async (req: Request, res: Response): Promis
             },
         ]);
     }
+
+    if (user.confirmed) {
+        return res.status(400).json([
+            {
+                path: 'email',
+                message: 'Your user is confirmed already',
+            },
+        ]);
+    }
+
     await sendConfirmationMail(user.id, email);
 
     return res.json({ message: 'Confirmation successfully sent' });
