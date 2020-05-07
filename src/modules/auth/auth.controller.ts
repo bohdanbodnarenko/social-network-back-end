@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 import { v4 } from 'uuid';
-import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { formatYupError } from '../../utils/formatYupError';
 import { validLoginSchema, validPasswordSchema, validUserSchema } from '../shared/validations/';
 import { User } from '../../entity';
 import { redis } from '../../redis';
-import { emailTransporter } from '../../utils/emailTransporter';
+import { emailTransporter, formatYupError } from '../../utils';
 import { AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { confirmEmailPrefix, forgotPasswordPrefix, uploadsDir } from '../shared/constants/constants';
 import { UpdateResult } from 'typeorm';
@@ -53,7 +52,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         return res.status(400).json(formatYupError(err));
     }
     const { email, password } = body;
-    const user: User = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
         return res.status(404).json([
@@ -80,6 +79,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     }
 
     user.password = undefined;
+
     const token = jwt.sign(
         {
             id: user.id,
@@ -87,7 +87,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         process.env.JWT_SECRET as string,
         { expiresIn: '2 days' },
     );
-    res.json({
+
+    return res.json({
         user,
         token,
     });

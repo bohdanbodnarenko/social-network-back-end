@@ -1,3 +1,4 @@
+export * from './authMiddleware';
 export * from './isAuth';
 export * from './isChannelMember';
 export * from './isChannelOwner';

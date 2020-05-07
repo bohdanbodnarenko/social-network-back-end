@@ -1,3 +1,5 @@
+require('./config/passport');
+
 import * as express from 'express';
 import * as session from 'express-session';
 import * as connectRedis from 'connect-redis';
@@ -7,15 +9,22 @@ import * as RateLimit from 'express-rate-limit';
 import * as RateLimitRedisStore from 'rate-limit-redis';
 import * as helmet from 'helmet';
 import * as fileUpload from 'express-fileupload';
+import * as errorHandler from 'errorhandler';
+import * as passport from 'passport';
 
-import { weblogger } from './utils/logger';
+import { weblogger } from './utils/';
 import { redis } from './redis';
 import * as routes from './modules';
 import { uploadsDir } from './modules/shared/constants/constants';
 
 const RedisStore = connectRedis(session);
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const app = express();
+
+if (!isProduction) {
+    app.use(errorHandler());
+}
 
 if (process.env.NODE_ENV !== 'test') {
     app.use(weblogger);
@@ -24,6 +33,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 app.use(express.static(uploadsDir));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
