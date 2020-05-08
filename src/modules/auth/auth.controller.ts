@@ -52,7 +52,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         return res.status(400).json(formatYupError(err));
     }
     const { email, password } = body;
-    const user = await User.findOne({ email });
+    const user: User = await User.findOne({ email });
 
     if (!user) {
         return res.status(404).json([

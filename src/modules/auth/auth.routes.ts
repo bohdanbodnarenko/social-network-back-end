@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import * as passport from 'passport';
 
-import { isAuth, saveImage } from '../shared/middlewares';
+import { authMiddleware, isAuth, saveImage } from '../shared/middlewares';
 import {
     changePassword,
     confirmEmail,
@@ -192,7 +193,7 @@ authRouter.post('/register', saveImage, registerUser);
  *       404:
  *         description: User with this email does not exist
  */
-authRouter.post('/login', login);
+authRouter.post('/login', authMiddleware.optional, login);
 
 /**
  * @swagger
@@ -312,3 +313,14 @@ authRouter.post('/reset-password/:key', changePassword);
  *         description: Bad email or user does not exist
  */
 authRouter.post('/send-confirmation', sendConfirmationAgain);
+
+authRouter.post('/reset-password/:key', changePassword);
+
+authRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+authRouter.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { scope: ['profile', 'email'] }),
+    (req, res) => {
+        res.redirect('/');
+    },
+);
