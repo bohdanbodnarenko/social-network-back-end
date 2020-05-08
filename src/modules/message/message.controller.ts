@@ -32,7 +32,7 @@ export const getMessages = async (req: AuthReq & ChannelByIdReq, res: Response):
         channelById,
         query: { limit, offset },
     } = req;
-    const take = limit && +limit && +limit <= 200 ? limit : 50;
+    const take = limit && +limit && +limit <= 200 ? +limit : 50;
     const messages = await Message.find({
         where: { channel: channelById },
         skip: offset || 0,

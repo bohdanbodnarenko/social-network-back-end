@@ -32,7 +32,7 @@ export const getPosts = async (req: AuthReq, res: Response): Promise<Response> =
         user,
     } = req;
     let posts: Post[];
-    const take = limit && +limit && +limit <= 50 ? limit : 20;
+    const take = limit && +limit && +limit <= 50 ? +limit : 20;
     if (onlyFollowing === 'true') {
         const followedIds = (
             await Subscription.createQueryBuilder('subscription')
