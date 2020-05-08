@@ -4,7 +4,7 @@ import { In } from 'typeorm';
 
 import { AuthReq, ChannelByIdReq, MessageByIdReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { validMessageSchema } from '../shared/validations';
-import { formatYupError } from '../../utils/formatYupError';
+import { formatYupError } from '../../utils';
 import { Message } from '../../entity';
 import { shortUserFields, uploadsDir } from '../shared/constants/constants';
 import * as fs from 'fs';
@@ -32,12 +32,13 @@ export const getMessages = async (req: AuthReq & ChannelByIdReq, res: Response):
         channelById,
         query: { limit, offset },
     } = req;
+    const take = limit && +limit && +limit <= 200 ? limit : 50;
     const messages = await Message.find({
         where: { channel: channelById },
         skip: offset || 0,
-        take: limit !== undefined ? (limit <= 200 ? limit : 200) : 20,
+        take,
         relations: ['sender'],
-    });
+    } as any);
     const messagesToSend = messages.map(message => ({
         ...message,
         sender: _.pick(message.sender, shortUserFields),

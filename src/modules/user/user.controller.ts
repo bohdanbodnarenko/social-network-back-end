@@ -31,11 +31,9 @@ export const userById = async (
 export const getUser = (req: UserByIdReq, res: Response): Response => res.json(req.userById);
 
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
-    // const { offset, limit } = req.query;
-    const users = await User
-        .find
-        // { skip: +offset || 0, take: +limit ? (limit < 100 ? limit : 100) : 50 }
-        ();
+    const { offset, limit } = req.query;
+    // const users = await User.find({ skip: +offset || 0, take: +limit ? (limit < 100 ? limit : 100) : 50 } as any);
+    const users = await User.find({ skip: +offset || 0, take: +limit || 50 } as any);
     return res.json(users.map(user => _.pick(user, shortUserFields)));
 };
 

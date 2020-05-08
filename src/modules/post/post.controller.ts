@@ -6,7 +6,7 @@ import * as path from 'path';
 
 import { AuthReq, PostByIdReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { validPostSchema, validUpdatePostSchema } from '../shared/validations';
-import { formatYupError } from '../../utils/formatYupError';
+import { formatYupError } from '../../utils';
 import { Post } from '../../entity';
 import { Subscription } from '../../entity/Subscription';
 import { uploadsDir } from '../shared/constants/constants';
@@ -32,6 +32,7 @@ export const getPosts = async (req: AuthReq, res: Response): Promise<Response> =
         user,
     } = req;
     let posts: Post[];
+    const take = limit && +limit && +limit <= 50 ? limit : 20;
     if (onlyFollowing === 'true') {
         const followedIds = (
             await Subscription.createQueryBuilder('subscription')
@@ -48,17 +49,17 @@ export const getPosts = async (req: AuthReq, res: Response): Promise<Response> =
 
         posts = await Post.find({
             where: { owner: In(followedIds) },
-            take: limit && limit <= 50 ? limit : 20,
+            take,
             skip: offset || 0,
             order: { created: 'DESC' },
-        });
+        } as any);
     } else {
         posts = await Post.find({
             where: userId ? { owner: userId } : {},
-            take: limit && limit <= 50 ? limit : 20,
+            take,
             skip: offset || 0,
             order: { created: 'DESC' },
-        });
+        } as any);
     }
 
     return res.json(posts);

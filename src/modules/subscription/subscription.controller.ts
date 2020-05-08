@@ -55,6 +55,7 @@ export const getFollowers = async (req: UserByIdReq, res: Response): Promise<Res
         userById,
         query: { limit, offset, online },
     } = req;
+    const take = limit && +limit && +limit <= 200 ? limit : 50;
     const followers = await Subscription.createQueryBuilder('subscription')
         .leftJoinAndSelect('subscription.subscriber', 'subscriber')
         .where(
@@ -63,8 +64,8 @@ export const getFollowers = async (req: UserByIdReq, res: Response): Promise<Res
                 : 'subscription.subscribedTo = :userId and subscriber.online = :online',
             { userId: userById.id, online },
         )
-        .skip(offset || 0)
-        .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
+        .skip(+offset || 0)
+        .take(take)
         .getMany();
     return res.json(followers.map(({ subscriber }) => _.pick(subscriber, shortUserFields)));
 };
@@ -74,6 +75,8 @@ export const getFollowing = async (req: UserByIdReq, res: Response): Promise<Res
         userById,
         query: { limit, offset, online },
     } = req;
+    const take = limit && +limit && +limit <= 200 ? limit : 50;
+
     const following = await Subscription.createQueryBuilder('subscription')
         .leftJoinAndSelect('subscription.subscribedTo', 'subscribedTo')
         .where(
@@ -82,8 +85,8 @@ export const getFollowing = async (req: UserByIdReq, res: Response): Promise<Res
                 : 'subscription.subscriber = :userId and subscribedTo.online = :online',
             { userId: userById.id, online },
         )
-        .skip(offset || 0)
-        .take(limit !== undefined ? (limit <= 200 ? limit : 200) : 50)
+        .skip(+offset || 0)
+        .take(take)
         .getMany();
     return res.json(following.map(({ subscribedTo }) => _.pick(subscribedTo, shortUserFields)));
 };
