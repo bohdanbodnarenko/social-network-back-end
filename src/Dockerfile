@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 4000
 
 COPY . .
-COPY .env.docker ./.env
+COPY ../.env.docker ./.env
 COPY package.json package.json
 COPY ormconfig.docker.json ./ormconfig.json
 
