@@ -248,7 +248,7 @@ export const registerUser = async (req: ReqWithImageUrl, res: Response): Promise
     return res.json({ message: 'Registration success' });
 };
 
-export const confirmEmail = async (req: Request, res: Response): Promise<Response> => {
+export const confirmEmail = async (req: Request, res: Response): Promise<Response | void> => {
     const { id } = req.params;
     const userId = await redis.get(confirmEmailPrefix + id);
 
@@ -260,7 +260,7 @@ export const confirmEmail = async (req: Request, res: Response): Promise<Respons
 
         await Promise.all(promises);
 
-        return res.send({ message: 'ok' });
+        return res.redirect(process.env.FRONT_END_HOST + '/login');
     } else {
         return res.status(400).send({ error: 'invalid' });
     }
@@ -281,7 +281,7 @@ const createOrGetUserBy2Auth = async (
     return user;
 };
 
-export const googleAuthCallback = async (req: Request & any, res: Response): Promise<Response> => {
+export const googleAuthCallback = async (req: Request & any, res: Response): Promise<void> => {
     const {
         user: {
             name: { givenName, familyName },
@@ -298,8 +298,5 @@ export const googleAuthCallback = async (req: Request & any, res: Response): Pro
         { expiresIn: '2 days' },
     );
 
-    return res.json({
-        user,
-        token,
-    });
+    return res.redirect(`${process.env.FRONT_END_HOST}/oauth?token=${token}`);
 };
