@@ -62,6 +62,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
             },
         ]);
     }
+    if (!user.password) {
+        return res.status(400).json([{ path: 'password', message: 'Wrong password' }]);
+    }
 
     if (!user.confirmed) {
         return res.status(403).json([
@@ -261,4 +264,42 @@ export const confirmEmail = async (req: Request, res: Response): Promise<Respons
     } else {
         return res.status(400).send({ error: 'invalid' });
     }
+};
+
+const createOrGetUserBy2Auth = async (
+    email: string,
+    firstName: string,
+    lastName: string,
+    imageUrl?: string,
+): Promise<User> => {
+    let user = await User.findOne({ email });
+    if (!user) {
+        user = User.create({ email, firstName, lastName, imageUrl, confirmed: true });
+        await user.save();
+    }
+    delete user.password;
+    return user;
+};
+
+export const googleAuthCallback = async (req: Request & any, res: Response): Promise<Response> => {
+    const {
+        user: {
+            name: { givenName, familyName },
+        },
+    } = req;
+    const [{ value: email }] = req.user.emails;
+    const [{ value: photo }] = req.user.photos;
+    const user = await createOrGetUserBy2Auth(email, givenName, familyName, photo);
+    const token = jwt.sign(
+        {
+            id: user.id,
+        },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '2 days' },
+    );
+
+    return res.json({
+        user,
+        token,
+    });
 };

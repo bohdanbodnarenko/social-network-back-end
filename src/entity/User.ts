@@ -118,7 +118,7 @@ export class User extends BaseEntity {
     @Column({ type: 'date', nullable: true })
     dateOfBirth: Date;
 
-    @Column({ type: 'text' })
+    @Column({ type: 'text', nullable: true })
     password: string;
 
     @CreateDateColumn({ default: new Date() })
@@ -127,7 +127,7 @@ export class User extends BaseEntity {
     @Column({ type: 'boolean', default: false })
     confirmed: boolean;
 
-    @Column({ type: 'boolean', nullable: true })
+    @Column({ type: 'boolean', nullable: true, default: false })
     forgotPasswordLocked: boolean;
 
     @Column({ type: 'varchar', length: 200, nullable: true })
@@ -191,6 +191,8 @@ export class User extends BaseEntity {
 
     @BeforeInsert()
     async hashPasswordBeforeInsert(): Promise<void> {
-        this.password = await hash(this.password, 10);
+        if (this.password) {
+            this.password = await hash(this.password, 10);
+        }
     }
 }

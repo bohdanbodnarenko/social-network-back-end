@@ -5,6 +5,7 @@ import { authMiddleware, isAuth, saveImage } from '../shared/middlewares';
 import {
     changePassword,
     confirmEmail,
+    googleAuthCallback,
     login,
     me,
     registerUser,
@@ -317,10 +318,23 @@ authRouter.post('/send-confirmation', sendConfirmationAgain);
 authRouter.post('/reset-password/:key', changePassword);
 
 authRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     name: Auth with google
+ *     summary: Auth to existing user by Google or create a new one
+ *     responses:
+ *       200:
+ *         description: Auth success
+ *       302:
+ *         description: Redirect to google page
+ */
 authRouter.get(
     '/auth/google/callback',
     passport.authenticate('google', { scope: ['profile', 'email'] }),
-    (req, res) => {
-        res.redirect('/');
-    },
+    googleAuthCallback,
 );
