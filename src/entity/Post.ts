@@ -1,7 +1,17 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './User';
 import { Comment } from './Comment';
 import { Like } from './Like';
+import { Category } from './Category';
 
 /**
  * @swagger
@@ -42,6 +52,11 @@ import { Like } from './Like';
  *              items:
  *                type: object
  *                $ref: '#/components/schemas/Like'
+ *          categories:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Category'
  */
 @Entity()
 export class Post extends BaseEntity {
@@ -74,6 +89,9 @@ export class Post extends BaseEntity {
         like => like.post,
     )
     likes: Like[];
+
+    @ManyToMany(() => Category)
+    categories: Category[];
 
     @ManyToOne(
         () => User,

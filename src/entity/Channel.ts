@@ -1,6 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 import { Message } from './Message';
+import { Category } from './Category';
 
 /**
  * @swagger
@@ -36,6 +37,11 @@ import { Message } from './Message';
  *              items:
  *                  type: object
  *                  $ref: '#/components/schemas/Message'
+ *          categories:
+ *              type: array
+ *              items:
+ *                  type: object
+ *                  $ref: '#/components/schemas/Category'
  */
 @Entity()
 export class Channel extends BaseEntity {
@@ -71,4 +77,7 @@ export class Channel extends BaseEntity {
         message => message.channel,
     )
     messages: Message[];
+
+    @ManyToMany(() => Category)
+    categories: Category[];
 }

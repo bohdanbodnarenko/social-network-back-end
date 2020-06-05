@@ -15,6 +15,7 @@ import { Message } from './Message';
 import { Post } from './Post';
 import { Subscription } from './Subscription';
 import { Comment } from './Comment';
+import { Category } from './Category';
 
 /**
  * @swagger
@@ -100,9 +101,15 @@ import { Comment } from './Comment';
  *              items:
  *                type: object
  *                $ref: '#/components/schemas/Comment'
+ *          preferredCategories:
+ *              type: array
+ *              items:
+ *                type: object
+ *                $ref: '#/components/schemas/Category'
  */
 @Entity()
 export class User extends BaseEntity {
+    // TODO add location and google maps api
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -188,6 +195,9 @@ export class User extends BaseEntity {
         comment => comment.sender,
     )
     comments: Comment[];
+
+    @ManyToMany(() => Category)
+    preferredCategories: Category[];
 
     @BeforeInsert()
     async hashPasswordBeforeInsert(): Promise<void> {
