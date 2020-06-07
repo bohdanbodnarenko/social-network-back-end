@@ -3,19 +3,20 @@ import 'reflect-metadata';
 import { Application } from 'express';
 
 import { redis } from './redis';
-import { createTypeormConn } from './utils/createTypeormConn';
 import { app } from './app';
+import { createTypeormConn, logger } from './utils';
 
 export const startServer = async (): Promise<Application> => {
     if (process.env.NODE_ENV === 'test') {
         await redis.flushall();
     }
 
-    const port = process.env.PORT || 4000;
+    const port = +process.env.PORT || 4000;
+    logger.info('$PORT: ', process.env.PORT);
 
     await createTypeormConn();
 
-    app.listen(port);
+    app.listen(port, '0.0.0.0');
 
     return app;
 };
