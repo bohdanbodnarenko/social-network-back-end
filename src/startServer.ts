@@ -13,9 +13,8 @@ export const startServer = async (): Promise<Application> => {
 
     const port = process.env.PORT || 4000;
     logger.info('$PORT: ', process.env.PORT);
-    logger.info('$PORT: ', JSON.parse(port as string));
-    logger.info('$PORT: ', Object.values(JSON.parse(port as string)));
-    logger.info('$PORT: ', +Object.values(JSON.parse(port as string)).join());
+    logger.info('$PORT: ', Object.values(port));
+    logger.info('$PORT: ', +Object.values(port).join(''));
 
     await createTypeormConn();
 
