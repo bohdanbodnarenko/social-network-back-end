@@ -15,7 +15,7 @@ export const startServer = async (): Promise<Application> => {
 
     await createTypeormConn();
 
-    app.listen(+port, process.env.PORT ? '0.0.0.0' : 'localhost');
+    app.listen(+port, () => console.log(`Listening on ${port}`));
 
     return app;
 };
