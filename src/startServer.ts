@@ -4,19 +4,18 @@ import { Application } from 'express';
 
 import { redis } from './redis';
 import { app } from './app';
-import { createTypeormConn, logger } from './utils';
+import { createTypeormConn } from './utils';
 
 export const startServer = async (): Promise<Application> => {
     if (process.env.NODE_ENV === 'test') {
         await redis.flushall();
     }
 
-    const port = process.env.PORT || 4000;
-    logger.info('$PORT: ', port.toString());
+    const port = process.env.PORT || '4000';
 
     await createTypeormConn();
 
-    app.listen(process.env.PORT);
+    app.listen(+port, process.env.PORT ? '0.0.0.0' : 'localhost');
 
     return app;
 };
