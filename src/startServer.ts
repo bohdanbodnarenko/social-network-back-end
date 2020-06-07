@@ -11,12 +11,12 @@ export const startServer = async (): Promise<Application> => {
         await redis.flushall();
     }
 
-    const port = +process.env.PORT || 4000;
+    const port = process.env.PORT || 4000;
     logger.info('$PORT: ', process.env.PORT);
 
     await createTypeormConn();
 
-    app.listen(port, '0.0.0.0');
+    app.listen(+port ? port : +Object.values(JSON.parse(port as string)).join());
 
     return app;
 };
