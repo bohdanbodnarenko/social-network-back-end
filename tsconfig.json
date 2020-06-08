@@ -7,9 +7,16 @@
         "outDir": "dist",
         "moduleResolution": "node",
 
+        "removeComments": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "baseUrl": "..",
+        "paths": {}
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "src/**/*.test.ts"]

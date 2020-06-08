@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { AuthReq, CommentByIdReq, PostByIdReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { validCommentSchema, validUpdateCommentSchema } from '../shared/validations';
-import { formatYupError } from '../../utils/formatYupError';
+import { formatYupError } from '../../utils';
 import { Comment } from '../../entity';
 import { uploadsDir } from '../shared/constants/constants';
 
@@ -58,7 +58,7 @@ export const updateComment = async (
     const updatesFromBody = { ..._.pick(body, ['content']), updated: new Date(), imageUrl };
 
     await Comment.update({ id: comment.id }, updatesFromBody);
-    res.json({ ...comment, ...updatesFromBody });
+    return res.json({ ...comment, ...updatesFromBody });
 };
 
 export const deleteComment = async (req: AuthReq & CommentByIdReq, res: Response): Promise<Response> => {

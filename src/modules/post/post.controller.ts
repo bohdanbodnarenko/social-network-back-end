@@ -11,7 +11,7 @@ import { Post } from '../../entity';
 import { Subscription } from '../../entity/Subscription';
 import { uploadsDir } from '../shared/constants/constants';
 
-export const postById = async (req: PostByIdReq, res: Response, next: NextFunction): Promise<Response> => {
+export const postById = async (req: PostByIdReq, res: Response, next: NextFunction): Promise<Response | void> => {
     const { postId } = req.params;
     if (!+postId) {
         return res.status(400).json({ error: 'Not valid post id' });
@@ -23,7 +23,7 @@ export const postById = async (req: PostByIdReq, res: Response, next: NextFuncti
     }
     delete post.owner.password;
     req.post = post;
-    next();
+    return next();
 };
 
 export const getPosts = async (req: AuthReq, res: Response): Promise<Response> => {
