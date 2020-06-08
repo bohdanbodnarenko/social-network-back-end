@@ -4,7 +4,7 @@ import { Application } from 'express';
 
 import { redis } from './redis';
 import { app } from './app';
-import { createTypeormConn } from './utils';
+import { createTypeormConn, logger } from './utils';
 
 export const startServer = async (): Promise<Application> => {
     if (process.env.NODE_ENV === 'test') {
@@ -12,10 +12,16 @@ export const startServer = async (): Promise<Application> => {
     }
 
     const port = process.env.PORT || '4000';
+    const host = process.env.HOST || '0.0.0.0';
 
     await createTypeormConn();
 
-    app.listen(+port, () => console.log(`Listening on ${port}`));
+    app.listen(+port, host, e => {
+        if (e) {
+            logger.error(e);
+        }
+        logger.info(`Listening on ${host}:${port}`);
+    });
 
     return app;
 };
