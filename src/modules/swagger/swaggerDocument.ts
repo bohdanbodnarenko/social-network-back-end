@@ -7,10 +7,10 @@ export const swaggerDocument = {
         info: {
             version: pkg.version,
             title: pkg.name,
-            description: 'Social network written on NodeJS with modern technologies and unit test',
+            description: 'Social network PeoCon',
             contact: {
                 name: 'Bohdan Bodnarenko',
-                url: 'https://github.com/bogdanbodnarenko',
+                url: 'https://github.com/bohdanbodnarenko',
                 email: 'bodya.bodnarenko@gmail.com',
             },
             license: {
