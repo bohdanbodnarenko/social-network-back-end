@@ -11,7 +11,7 @@
         "dev": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
         "postinstall": "npm run build",
         "test": "NODE_ENV=test jest --maxWorkers=1",
-        "start": "ts-node src/index.ts"
+        "start": "node dist/src/index.js"
     },
     "author": "bogdanbodnarenko",
     "license": "ISC",
