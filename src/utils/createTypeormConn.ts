@@ -1,9 +1,18 @@
-import { Connection, ConnectionOptions, createConnection, getConnectionOptions } from 'typeorm';
+import { Connection, createConnection, getConnectionOptions } from 'typeorm';
 import * as path from 'path';
 
 export const createTypeormConn = async (): Promise<Connection> => {
+    if (process.env.NODE_ENV !== 'production') {
+        const connectionOptions = await getConnectionOptions(process.env.NODE_ENV || 'test');
+        return createConnection({
+            name: 'default',
+            ...connectionOptions,
+        });
+    }
     const dirname = path.join(__dirname, '..');
-    const prodOptions: ConnectionOptions = {
+
+    return createConnection({
+        name: 'default',
         type: 'postgres',
         database: process.env.TYPEORM_DATABASE || 'postgres',
         host: process.env.TYPEORM_HOST || 'localhost',
@@ -16,10 +25,5 @@ export const createTypeormConn = async (): Promise<Connection> => {
         logging: Boolean(process.env.TYPEORM_LOGGING) || true,
         synchronize: Boolean(process.env.TYPEORM_SYNCHRONIZE) || true,
         url: process.env.DATABASE_URL || 'localhost',
-    };
-    const connectionOptions = await getConnectionOptions(process.env.NODE_ENV || 'test');
-    return createConnection({
-        name: 'default',
-        ...(process.env.NODE_ENV === 'production' ? prodOptions : connectionOptions),
     });
 };
