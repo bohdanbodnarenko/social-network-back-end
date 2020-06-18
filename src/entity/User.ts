@@ -101,7 +101,7 @@ import { Category } from './Category';
  *              items:
  *                type: object
  *                $ref: '#/components/schemas/Comment'
- *          preferredCategories:
+ *          categories:
  *              type: array
  *              items:
  *                type: object
@@ -197,7 +197,7 @@ export class User extends BaseEntity {
     comments: Comment[];
 
     @ManyToMany(() => Category)
-    preferredCategories: Category[];
+    categories: Category[];
 
     @BeforeInsert()
     async hashPasswordBeforeInsert(): Promise<void> {

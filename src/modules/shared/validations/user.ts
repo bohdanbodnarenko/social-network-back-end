@@ -50,4 +50,6 @@ export const validUpdateUserSchema = yup.object().shape({
         .min(3, lastNameNotLongEnough)
         .max(100),
     dateOfBirth: yup.date(),
+    imageUrl: yup.string(),
+    categories: yup.array().of(yup.number()),
 });
