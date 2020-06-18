@@ -5,12 +5,11 @@ export const createTypeormConn = async (): Promise<Connection> => {
     if (process.env.NODE_ENV !== 'production') {
         const connectionOptions = await getConnectionOptions(process.env.NODE_ENV || 'test');
         return createConnection({
-            name: 'default',
             ...connectionOptions,
+            name: 'default',
         });
     }
     const dirname = path.join(__dirname, '..');
-
     return createConnection({
         name: 'default',
         type: 'postgres',
