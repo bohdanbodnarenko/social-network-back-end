@@ -8,7 +8,7 @@ import * as path from 'path';
 import { validLoginSchema, validPasswordSchema, validUserSchema } from '../shared/validations/';
 import { User } from '../../entity';
 import { redis } from '../../redis';
-import { emailTransporter, formatYupError } from '../../utils';
+import { emailTransporter, formatYupError, logger } from '../../utils';
 import { AuthReq, ReqWithImageUrl } from '../shared/constants/interfaces';
 import { confirmEmailPrefix, forgotPasswordPrefix, uploadsDir } from '../shared/constants/constants';
 import { UpdateResult } from 'typeorm';
@@ -115,24 +115,25 @@ export const sendForgotPasswordEmail = async (req: Request, res: Response): Prom
 
     const recoverLink = `${process.env.FRONTEND_HOST}/forgot-password/${id}`;
     console.log(`Recover password link for user ${email}: ${recoverLink}`);
-
-    emailTransporter.sendMail(
-        {
-            to: email,
-            from: 'support@shopohavat.com',
-            subject: 'Password recovering',
-            html: `<html lang="en">
+    if (process.env.NODE_ENV !== 'test') {
+        emailTransporter.sendMail(
+            {
+                to: email,
+                from: 'support@shopohavat.com',
+                subject: 'Password recovering',
+                html: `<html lang="en">
                   <body>
                      <p>Shopohavat password recovering</p>
                      <a href="${recoverLink}">Recover password</a>
                   </body>
                </html>`,
-        },
-        (err, info) => {
-            if (err) console.error(err);
-            else console.log(info);
-        },
-    );
+            },
+            (err, info) => {
+                if (err) logger.error(err);
+                else console.log(info);
+            },
+        );
+    }
     return res.json({ message: 'Please check your email for the next steps' });
 };
 

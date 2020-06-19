@@ -7,7 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import { redis } from '../../redis';
 import { User } from '../../entity';
 import { confirmEmailPrefix, forgotPasswordPrefix } from '../shared/constants/constants';
-import { createTypeormConn } from '../../utils/createTypeormConn';
+import { createTypeormConn } from '../../utils';
 import { app } from '../../app';
 
 let request: requests.SuperTest<any>;
@@ -85,12 +85,10 @@ describe('Auth routes', () => {
     });
     it('should confirm an email', async done => {
         const [userKey] = await redis.keys(confirmEmailPrefix + '*');
-        console.log(userKey);
-        const { data, status } = await axios.get(
+        const { status } = await axios.get(
             `${process.env.API_BASE}/confirm/${userKey.replace(confirmEmailPrefix, '')}`,
         );
         expect(status).toBe(200);
-        expect(data).toEqual({ message: 'ok' });
         const user = await User.findOne(1);
         expect(user.confirmed).toBe(true);
         done();
@@ -152,7 +150,7 @@ describe('Auth routes', () => {
             .get(`/me`)
             .set('Accept', 'application/json')
             .set('Authorization', 'Bearer ')
-            .expect(403, { error: 'Authentication error, please login again' }, done);
+            .expect(401, { error: 'Not authorized to access this resource' }, done);
     });
     it('should fail with bad token', done => {
         request

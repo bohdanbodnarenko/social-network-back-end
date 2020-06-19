@@ -46,7 +46,7 @@ export const getFollowingCount = async (req: AuthReq & UserByIdReq, res: Respons
 
 export const getFollowersCount = async (req: AuthReq & UserByIdReq, res: Response): Promise<Response> => {
     const { userById } = req;
-    const followers = await Subscription.find({ where: { subscriberTo: userById } });
+    const followers = await Subscription.find({ where: { subscribedTo: userById } });
     return res.json({ count: followers.length });
 };
 

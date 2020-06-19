@@ -105,6 +105,6 @@ export const updatePost = async (req: PostByIdReq & ReqWithImageUrl, res: Respon
 };
 
 export const deletePost = async (req: PostByIdReq, res: Response): Promise<Response> => {
-    await req.post.remove();
+    await Post.delete({ id: req.post.id });
     return res.json({ message: 'Post deleted successfully' });
 };
